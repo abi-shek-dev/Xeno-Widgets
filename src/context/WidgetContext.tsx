@@ -38,9 +38,9 @@ interface WidgetContextType {
   currentTrack: AudioTrack;
   isPlaying: boolean;
   togglePlay: () => void;
-  trackProgress: number; // in seconds
+  trackProgress: number;
   setTrackProgress: (progress: number) => void;
-  volume: number; // 0 to 100
+  volume: number;
   setVolume: (v: number) => void;
   nextTrack: () => void;
   prevTrack: () => void;
@@ -72,7 +72,6 @@ const DEFAULT_WIDGETS: WidgetMetadata[] = [
     defaultSize: "medium",
     isActive: true,
     isPinned: true,
-    accentColor: "#38bdf8", // Sky blue
   },
   {
     id: "monitor",
@@ -86,12 +85,11 @@ const DEFAULT_WIDGETS: WidgetMetadata[] = [
     defaultSize: "large",
     isActive: true,
     isPinned: false,
-    accentColor: "#a855f7", // Purple
   },
   {
     id: "notes",
     name: "XE Quick Scratchpad",
-    description: "Minimalist sticky notes and task checklist with color accents.",
+    description: "Minimalist sticky notes and task checklist.",
     category: "Productivity",
     iconName: "StickyNote",
     version: "1.9.0",
@@ -100,26 +98,24 @@ const DEFAULT_WIDGETS: WidgetMetadata[] = [
     defaultSize: "medium",
     isActive: true,
     isPinned: false,
-    accentColor: "#f59e0b", // Amber
   },
   {
     id: "music",
     name: "XE Ambient Sound & Media",
-    description: "Desktop media controller with audio spectrum equalizer visualizer.",
+    description: "Desktop media controller with playback controls.",
     category: "Media",
     iconName: "Music2",
     version: "2.0.1",
     author: "XE Labs",
-    tags: ["Audio", "Player", "Equalizer", "Media"],
+    tags: ["Audio", "Player", "Media"],
     defaultSize: "medium",
     isActive: true,
     isPinned: false,
-    accentColor: "#10b981", // Emerald
   },
   {
     id: "weather",
     name: "XE Atmosphere & Forecast",
-    description: "Real-time meteorological weather report with 4-day forecast and alerts.",
+    description: "Real-time meteorological weather report with 4-day forecast.",
     category: "Utility",
     iconName: "CloudSun",
     version: "1.5.0",
@@ -128,7 +124,6 @@ const DEFAULT_WIDGETS: WidgetMetadata[] = [
     defaultSize: "medium",
     isActive: true,
     isPinned: false,
-    accentColor: "#06b6d4", // Cyan
   },
   {
     id: "calendar",
@@ -142,7 +137,6 @@ const DEFAULT_WIDGETS: WidgetMetadata[] = [
     defaultSize: "small",
     isActive: false,
     isPinned: false,
-    accentColor: "#ec4899", // Pink
   },
 ];
 
@@ -150,7 +144,7 @@ const INITIAL_NOTES: NoteItem[] = [
   {
     id: "note-1",
     title: "Project Milestone",
-    content: "Ship XE Widgets v2.0 with Windows Fluent 2 layout & live widgets.",
+    content: "Ship XE Widgets v2.0 with editorial design & live widgets.",
     color: "amber",
     isPinned: true,
     completed: false,
@@ -159,7 +153,7 @@ const INITIAL_NOTES: NoteItem[] = [
   {
     id: "note-2",
     title: "UI Polish Checklist",
-    content: "Press scales to 0.96, 150ms transitions, and high-frequency instant response.",
+    content: "Thin borders, generous whitespace, precise alignment.",
     color: "sky",
     isPinned: false,
     completed: true,
@@ -220,9 +214,7 @@ const INITIAL_WEATHER: WeatherData = {
 };
 
 const DEFAULT_SETTINGS: AppSettings = {
-  themeId: "slate",
-  glassOpacity: 85,
-  blurStrength: 16,
+  theme: "light",
   enableSounds: true,
   alwaysOnTop: false,
   startWithWindows: true,
@@ -243,7 +235,12 @@ export function WidgetProvider({ children }: { children: React.ReactNode }) {
   const [widgets, setWidgets] = useState<WidgetMetadata[]>(() => {
     try {
       const saved = localStorage.getItem("xe_widgets_meta");
-      return saved ? JSON.parse(saved) : DEFAULT_WIDGETS;
+      if (saved) {
+        const parsed: WidgetMetadata[] = JSON.parse(saved);
+        // Migrate old data: strip accentColor if present
+        return parsed.map(({ ...w }) => w);
+      }
+      return DEFAULT_WIDGETS;
     } catch {
       return DEFAULT_WIDGETS;
     }
@@ -289,7 +286,6 @@ export function WidgetProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const timer = setInterval(() => {
       setMetrics((prev) => {
-        // Natural fluctuations
         const deltaCpu = (Math.random() - 0.48) * 8;
         const newCpu = Math.min(96, Math.max(8, Math.round(prev.cpuUsage + deltaCpu)));
         const newHistory = [...prev.cpuHistory.slice(1), newCpu];
@@ -411,11 +407,27 @@ export function WidgetProvider({ children }: { children: React.ReactNode }) {
   const [settings, setSettings] = useState<AppSettings>(() => {
     try {
       const saved = localStorage.getItem("xe_widgets_settings");
-      return saved ? JSON.parse(saved) : DEFAULT_SETTINGS;
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // Migrate old settings: convert themeId to theme
+        if (parsed.themeId && !parsed.theme) {
+          parsed.theme = parsed.themeId === "paper" ? "light" : "dark";
+          delete parsed.themeId;
+          delete parsed.glassOpacity;
+          delete parsed.blurStrength;
+        }
+        return { ...DEFAULT_SETTINGS, ...parsed };
+      }
+      return DEFAULT_SETTINGS;
     } catch {
       return DEFAULT_SETTINGS;
     }
   });
+
+  // Apply theme on mount
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", settings.theme);
+  }, []);
 
   useEffect(() => {
     try {
@@ -426,7 +438,13 @@ export function WidgetProvider({ children }: { children: React.ReactNode }) {
   }, [settings]);
 
   const updateSettings = useCallback((newSettings: Partial<AppSettings>) => {
-    setSettings((prev) => ({ ...prev, ...newSettings }));
+    setSettings((prev) => {
+      const merged = { ...prev, ...newSettings };
+      if (newSettings.theme) {
+        document.documentElement.setAttribute("data-theme", newSettings.theme);
+      }
+      return merged;
+    });
   }, []);
 
   // Notifications
@@ -440,8 +458,8 @@ export function WidgetProvider({ children }: { children: React.ReactNode }) {
     },
     {
       id: "notif-2",
-      title: "Telemetry Calibrated",
-      message: "CPU and memory streaming at 1.2s intervals.",
+      title: "Design System Applied",
+      message: "Editorial minimalism theme loaded.",
       type: "info",
       timestamp: "17:42",
     },
@@ -462,7 +480,7 @@ export function WidgetProvider({ children }: { children: React.ReactNode }) {
     setNotifications([]);
   }, []);
 
-  // Hotkey listener for Command Palette (Ctrl+K or Cmd+K)
+  // Hotkey listener for Command Palette (Ctrl+K)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {

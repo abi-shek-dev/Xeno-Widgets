@@ -1,126 +1,251 @@
-import React from "react";
-import {
-  Activity,
-  Cpu,
-  HardDrive,
-  Wifi,
-  ArrowDown,
-  ArrowUp,
-  Zap,
-} from "lucide-react";
+import { Activity, Cpu, HardDrive, Wifi, ArrowDown, ArrowUp, Zap } from "lucide-react";
 import { motion } from "motion/react";
 import { useWidgets } from "../../context/WidgetContext";
+
+const widgetContainer: React.CSSProperties = {
+  height: "100%",
+  display: "flex",
+  flexDirection: "column",
+  border: "1px solid var(--xe-border)",
+  borderRadius: 4,
+  background: "var(--xe-surface)",
+  overflow: "hidden",
+};
 
 export default function SystemMonitorWidget() {
   const { metrics } = useWidgets();
 
+  const box: React.CSSProperties = {
+    border: "1px solid var(--xe-border)",
+    borderRadius: 3,
+    padding: "8px 10px",
+    background: "var(--xe-bg)",
+  };
+
+  const metaLabel: React.CSSProperties = {
+    fontFamily: "var(--xe-font-mono)",
+    fontSize: 9,
+    color: "var(--xe-faint)",
+    letterSpacing: "0.06em",
+    textTransform: "uppercase",
+  };
+
+  const valueText: React.CSSProperties = {
+    fontFamily: "var(--xe-font-mono)",
+    fontSize: 13,
+    fontWeight: 500,
+    color: "var(--xe-fg)",
+  };
+
+  const bar = (pct: number) => (
+    <div
+      style={{
+        height: 3,
+        width: "100%",
+        background: "var(--xe-border)",
+        borderRadius: 2,
+        marginTop: 6,
+        overflow: "hidden",
+      }}
+    >
+      <motion.div
+        style={{ height: "100%", background: "var(--xe-fg)", borderRadius: 2 }}
+        animate={{ width: `${pct}%` }}
+        transition={{ ease: "easeOut", duration: 0.5 }}
+      />
+    </div>
+  );
+
   return (
-    <div className="glass-card flex h-full flex-col justify-between overflow-hidden rounded-2xl p-5">
-      {/* Widget Header */}
-      <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
-        <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-purple-500/10 text-purple-400 border border-purple-500/20">
-            <Activity size={15} />
-          </div>
-          <span className="text-xs font-semibold text-white">System Telemetry</span>
+    <div style={widgetContainer}>
+      {/* Header */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "8px 12px",
+          borderBottom: "1px solid var(--xe-border)",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <Activity size={13} style={{ color: "var(--xe-muted)" }} />
+          <span
+            style={{
+              fontFamily: "var(--xe-font-mono)",
+              fontSize: 9,
+              color: "var(--xe-faint)",
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+            }}
+          >
+            SYSTEM TELEMETRY
+          </span>
         </div>
-        <div className="flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-400">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          Optimal
-        </div>
+        <span
+          style={{
+            fontFamily: "var(--xe-font-mono)",
+            fontSize: 9,
+            color: "var(--xe-faint)",
+            letterSpacing: "0.04em",
+          }}
+        >
+          LIVE
+        </span>
       </div>
 
-      {/* Grid of Gauges */}
-      <div className="grid grid-cols-2 gap-3 my-auto py-2">
-        {/* CPU Box */}
-        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
-          <div className="flex items-center justify-between text-[11px] text-zinc-400">
-            <span className="flex items-center gap-1.5">
-              <Cpu size={12} className="text-cyan-400" /> CPU
+      {/* Body */}
+      <div
+        style={{
+          flex: 1,
+          padding: "10px",
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 6,
+          overflow: "hidden",
+        }}
+      >
+        {/* CPU */}
+        <div style={box}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ ...metaLabel, display: "flex", alignItems: "center", gap: 4 }}>
+              <Cpu size={10} style={{ color: "var(--xe-muted)" }} />
+              CPU
             </span>
-            <span className="tabular-num font-mono font-semibold text-white">
+            <span className="tabnum" style={valueText}>
               {metrics.cpuUsage}%
             </span>
           </div>
-
-          {/* Sparkline bars */}
-          <div className="mt-2.5 flex h-7 items-end gap-1">
+          {/* Sparkline */}
+          <div
+            style={{
+              marginTop: 8,
+              display: "flex",
+              alignItems: "flex-end",
+              height: 20,
+              gap: 2,
+            }}
+          >
             {metrics.cpuHistory.map((val, idx) => (
               <motion.div
                 key={idx}
-                className="w-full rounded-sm bg-cyan-400/80"
-                style={{ height: `${Math.max(15, val)}%` }}
-                animate={{ height: `${Math.max(15, val)}%` }}
+                style={{
+                  flex: 1,
+                  background: "var(--xe-muted)",
+                  borderRadius: 1,
+                  minHeight: 2,
+                }}
+                animate={{ height: `${Math.max(8, val)}%` }}
                 transition={{ ease: "easeOut", duration: 0.3 }}
               />
             ))}
           </div>
         </div>
 
-        {/* RAM Box */}
-        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
-          <div className="flex items-center justify-between text-[11px] text-zinc-400">
-            <span className="flex items-center gap-1.5">
-              <Zap size={12} className="text-purple-400" /> RAM
+        {/* RAM */}
+        <div style={box}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ ...metaLabel, display: "flex", alignItems: "center", gap: 4 }}>
+              <Zap size={10} style={{ color: "var(--xe-muted)" }} />
+              RAM
             </span>
-            <span className="tabular-num font-mono font-semibold text-white">
+            <span className="tabnum" style={valueText}>
               {Math.round((metrics.ramUsedGB / metrics.ramTotalGB) * 100)}%
             </span>
           </div>
-          <p className="mt-1 text-[10px] font-mono text-zinc-400">
-            {metrics.ramUsedGB} GB of {metrics.ramTotalGB} GB
-          </p>
-          <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-white/[0.06]">
-            <motion.div
-              className="h-full rounded-full bg-purple-500"
-              animate={{
-                width: `${(metrics.ramUsedGB / metrics.ramTotalGB) * 100}%`,
-              }}
-              transition={{ ease: "easeOut", duration: 0.5 }}
-            />
+          <div
+            style={{
+              fontFamily: "var(--xe-font-mono)",
+              fontSize: 9,
+              color: "var(--xe-faint)",
+              marginTop: 2,
+            }}
+          >
+            {metrics.ramUsedGB} / {metrics.ramTotalGB} GB
           </div>
+          {bar((metrics.ramUsedGB / metrics.ramTotalGB) * 100)}
         </div>
 
-        {/* Storage Disk */}
-        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
-          <div className="flex items-center justify-between text-[11px] text-zinc-400">
-            <span className="flex items-center gap-1.5">
-              <HardDrive size={12} className="text-amber-400" /> NVMe SSD
+        {/* Disk */}
+        <div style={box}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ ...metaLabel, display: "flex", alignItems: "center", gap: 4 }}>
+              <HardDrive size={10} style={{ color: "var(--xe-muted)" }} />
+              DISK
             </span>
-            <span className="tabular-num font-mono font-semibold text-white">
+            <span className="tabnum" style={valueText}>
               {metrics.diskUsedPercent}%
             </span>
           </div>
-          <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-white/[0.06]">
-            <div
-              className="h-full rounded-full bg-amber-500"
-              style={{ width: `${metrics.diskUsedPercent}%` }}
-            />
-          </div>
+          {bar(metrics.diskUsedPercent)}
         </div>
 
-        {/* Network Throughput */}
-        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
-          <div className="flex items-center justify-between text-[11px] text-zinc-400">
-            <span className="flex items-center gap-1.5">
-              <Wifi size={12} className="text-emerald-400" /> Network
-            </span>
-          </div>
-          <div className="mt-2 flex items-center justify-between text-[10px] font-mono">
-            <span className="flex items-center gap-0.5 text-emerald-400">
-              <ArrowDown size={11} /> {metrics.networkDownMbps} M/s
-            </span>
-            <span className="flex items-center gap-0.5 text-zinc-400">
-              <ArrowUp size={11} /> {metrics.networkUpMbps} M/s
-            </span>
+        {/* Network */}
+        <div style={box}>
+          <span style={{ ...metaLabel, display: "flex", alignItems: "center", gap: 4 }}>
+            <Wifi size={10} style={{ color: "var(--xe-muted)" }} />
+            NETWORK
+          </span>
+          <div style={{ marginTop: 6, display: "flex", flexDirection: "column", gap: 3 }}>
+            <div
+              className="tabnum"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 4,
+                fontFamily: "var(--xe-font-mono)",
+                fontSize: 10,
+                color: "var(--xe-fg)",
+              }}
+            >
+              <ArrowDown size={10} style={{ color: "var(--xe-muted)" }} />
+              {metrics.networkDownMbps} Mb/s
+            </div>
+            <div
+              className="tabnum"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 4,
+                fontFamily: "var(--xe-font-mono)",
+                fontSize: 10,
+                color: "var(--xe-muted)",
+              }}
+            >
+              <ArrowUp size={10} style={{ color: "var(--xe-faint)" }} />
+              {metrics.networkUpMbps} Mb/s
+            </div>
           </div>
         </div>
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between border-t border-white/[0.06] pt-2 text-[10px] text-zinc-500">
-        <span>GPU Core: {metrics.gpuUsage}%</span>
-        <span>Uptime: {metrics.uptimeHours} hrs</span>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          padding: "5px 12px",
+          borderTop: "1px solid var(--xe-border)",
+        }}
+      >
+        <span
+          style={{
+            fontFamily: "var(--xe-font-mono)",
+            fontSize: 9,
+            color: "var(--xe-faint)",
+          }}
+        >
+          GPU {metrics.gpuUsage}%
+        </span>
+        <span
+          style={{
+            fontFamily: "var(--xe-font-mono)",
+            fontSize: 9,
+            color: "var(--xe-faint)",
+          }}
+        >
+          UP {metrics.uptimeHours}h
+        </span>
       </div>
     </div>
   );

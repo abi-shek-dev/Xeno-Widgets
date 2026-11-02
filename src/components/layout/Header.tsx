@@ -1,14 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import {
-  Search,
-  Bell,
-  Command,
-  Plus,
-  CheckCircle2,
-  AlertTriangle,
-  Info,
-  Trash2,
-} from "lucide-react";
+import { Search, Bell, Sun, Moon, Trash2, X } from "lucide-react";
 import { useWidgets } from "../../context/WidgetContext";
 
 interface HeaderProps {
@@ -23,13 +14,13 @@ export default function Header({ title, subtitle, actionButton }: HeaderProps) {
     notifications,
     clearNotifications,
     unreadCount,
-    setCurrentView,
+    settings,
+    updateSettings,
   } = useWidgets();
 
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
 
-  // Close notifications dropdown on outside click
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
@@ -40,90 +31,258 @@ export default function Header({ title, subtitle, actionButton }: HeaderProps) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const handleThemeToggle = () => {
+    updateSettings({ theme: settings.theme === "light" ? "dark" : "light" });
+  };
+
+  const iconBtnStyle: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 32,
+    height: 32,
+    border: "1px solid var(--xe-border)",
+    background: "var(--xe-surface)",
+    borderRadius: 4,
+    cursor: "pointer",
+    color: "var(--xe-muted)",
+    flexShrink: 0,
+    transition: "all 200ms var(--xe-ease)",
+  };
+
   return (
-    <header className="flex h-16 shrink-0 items-center justify-between border-b border-white/[0.08] bg-[#0c0e14]/60 px-6 backdrop-blur-md">
-      <div>
-        <h1 className="text-base font-semibold tracking-tight text-white">
+    <header
+      className="flex shrink-0 items-center justify-between"
+      style={{
+        height: 56,
+        padding: "0 32px",
+        borderBottom: "1px solid var(--xe-border)",
+        background: "var(--xe-bg)",
+      }}
+      data-tauri-drag-region
+    >
+      {/* Left: title + subtitle */}
+      <div data-tauri-drag-region>
+        <h1
+          style={{
+            fontFamily: "var(--xe-font-display)",
+            fontSize: 15,
+            color: "var(--xe-fg)",
+            lineHeight: 1.2,
+            letterSpacing: "-0.01em",
+          }}
+        >
           {title}
         </h1>
-        <p className="text-xs text-zinc-400">
+        <p
+          style={{
+            fontFamily: "var(--xe-font-body)",
+            fontSize: 11,
+            color: "var(--xe-muted)",
+            marginTop: 1,
+          }}
+        >
           {subtitle}
         </p>
       </div>
 
-      <div className="flex items-center gap-3">
-        {/* Spotlight Quick Search Pill */}
+      {/* Right: controls */}
+      <div className="flex items-center no-drag" style={{ gap: 8 }}>
+        {/* Search trigger */}
         <button
           type="button"
           onClick={() => setIsCommandPaletteOpen(true)}
-          className="pressable-btn flex h-9 items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 text-xs text-zinc-400 transition hover:border-white/[0.16] hover:bg-white/[0.06] hover:text-zinc-200"
+          className="flex items-center xe-transition"
+          style={{
+            height: 32,
+            padding: "0 10px",
+            gap: 6,
+            border: "1px solid var(--xe-border)",
+            background: "var(--xe-surface)",
+            borderRadius: 4,
+            cursor: "pointer",
+            color: "var(--xe-faint)",
+            fontFamily: "var(--xe-font-body)",
+            fontSize: 12,
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--xe-fg)";
+            (e.currentTarget as HTMLButtonElement).style.color = "var(--xe-muted)";
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--xe-border)";
+            (e.currentTarget as HTMLButtonElement).style.color = "var(--xe-faint)";
+          }}
         >
-          <Search size={14} className="text-zinc-500" />
-          <span className="hidden sm:inline">Search widgets, actions...</span>
-          <span className="sm:hidden">Search</span>
-          <span className="ml-2 flex items-center gap-0.5 rounded-md bg-white/[0.06] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">
-            <Command size={10} /> K
+          <Search size={12} style={{ color: "var(--xe-faint)" }} />
+          <span style={{ minWidth: 120 }}>Search widgets...</span>
+          <span
+            style={{
+              fontFamily: "var(--xe-font-mono)",
+              fontSize: 10,
+              background: "var(--xe-border)",
+              padding: "1px 5px",
+              borderRadius: 3,
+              color: "var(--xe-muted)",
+              letterSpacing: "0.04em",
+            }}
+          >
+            ⌘K
           </span>
         </button>
 
-        {/* Notifications Dropdown */}
+        {/* Notifications */}
         <div className="relative" ref={notifRef}>
           <button
             type="button"
             onClick={() => setIsNotifOpen((prev) => !prev)}
             aria-label="Notifications"
-            className="pressable-btn relative flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.03] text-zinc-400 transition hover:border-white/[0.16] hover:bg-white/[0.06] hover:text-zinc-200"
+            className="relative xe-transition"
+            style={iconBtnStyle}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--xe-fg)";
+              (e.currentTarget as HTMLButtonElement).style.color = "var(--xe-fg)";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--xe-border)";
+              (e.currentTarget as HTMLButtonElement).style.color = "var(--xe-muted)";
+            }}
           >
-            <Bell size={15} />
+            <Bell size={14} />
             {unreadCount > 0 && (
-              <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-cyan-400 ring-2 ring-[#0c0e14]" />
+              <span
+                className="absolute"
+                style={{
+                  top: 7,
+                  right: 7,
+                  width: 5,
+                  height: 5,
+                  borderRadius: "50%",
+                  background: "var(--xe-fg)",
+                }}
+              />
             )}
           </button>
 
           {isNotifOpen && (
-            <div className="absolute right-0 top-11 z-50 w-80 rounded-2xl border border-white/[0.1] bg-[#12141c]/95 p-3 shadow-2xl shadow-black/80 backdrop-blur-2xl">
-              <div className="mb-2 flex items-center justify-between border-b border-white/[0.06] pb-2 px-1">
-                <span className="text-xs font-semibold text-white">
+            <div
+              className="absolute"
+              style={{
+                right: 0,
+                top: 40,
+                zIndex: 50,
+                width: 300,
+                background: "var(--xe-bg)",
+                border: "1px solid var(--xe-border)",
+                borderRadius: 6,
+                boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
+                overflow: "hidden",
+              }}
+            >
+              <div
+                className="flex items-center justify-between"
+                style={{
+                  padding: "10px 14px",
+                  borderBottom: "1px solid var(--xe-border)",
+                }}
+              >
+                <span
+                  style={{
+                    fontFamily: "var(--xe-font-mono)",
+                    fontSize: 10,
+                    color: "var(--xe-muted)",
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                  }}
+                >
                   Notifications ({notifications.length})
                 </span>
-                {notifications.length > 0 && (
+                <div className="flex items-center" style={{ gap: 8 }}>
+                  {notifications.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={clearNotifications}
+                      className="flex items-center xe-transition"
+                      style={{
+                        gap: 4,
+                        fontSize: 11,
+                        color: "var(--xe-faint)",
+                        cursor: "pointer",
+                        fontFamily: "var(--xe-font-body)",
+                      }}
+                      onMouseEnter={(e) =>
+                        ((e.currentTarget as HTMLButtonElement).style.color = "var(--xe-fg)")
+                      }
+                      onMouseLeave={(e) =>
+                        ((e.currentTarget as HTMLButtonElement).style.color = "var(--xe-faint)")
+                      }
+                    >
+                      <Trash2 size={11} />
+                      Clear
+                    </button>
+                  )}
                   <button
                     type="button"
-                    onClick={clearNotifications}
-                    className="flex items-center gap-1 text-[11px] text-zinc-400 hover:text-rose-400"
+                    onClick={() => setIsNotifOpen(false)}
+                    style={{ color: "var(--xe-faint)", cursor: "pointer" }}
                   >
-                    <Trash2 size={11} /> Clear
+                    <X size={13} />
                   </button>
-                )}
+                </div>
               </div>
 
-              <div className="max-h-64 space-y-1.5 overflow-y-auto">
+              <div style={{ maxHeight: 260, overflowY: "auto" }}>
                 {notifications.length === 0 ? (
-                  <p className="py-6 text-center text-xs text-zinc-500">
-                    No new notifications
-                  </p>
+                  <div
+                    style={{
+                      padding: "24px 14px",
+                      textAlign: "center",
+                      fontSize: 12,
+                      color: "var(--xe-faint)",
+                      fontFamily: "var(--xe-font-body)",
+                    }}
+                  >
+                    No notifications
+                  </div>
                 ) : (
                   notifications.map((n) => (
                     <div
                       key={n.id}
-                      className="rounded-xl border border-white/[0.04] bg-white/[0.02] p-2.5 text-xs transition hover:bg-white/[0.05]"
+                      style={{
+                        padding: "10px 14px",
+                        borderBottom: "1px solid var(--xe-border)",
+                      }}
                     >
-                      <div className="flex items-center gap-1.5 font-medium text-zinc-200">
-                        {n.type === "success" && (
-                          <CheckCircle2 size={13} className="text-emerald-400" />
-                        )}
-                        {n.type === "warning" && (
-                          <AlertTriangle size={13} className="text-amber-400" />
-                        )}
-                        {n.type === "info" && (
-                          <Info size={13} className="text-cyan-400" />
-                        )}
-                        <span>{n.title}</span>
-                        <span className="ml-auto text-[10px] text-zinc-500 font-mono">
+                      <div className="flex items-center justify-between">
+                        <span
+                          style={{
+                            fontSize: 12,
+                            fontFamily: "var(--xe-font-body)",
+                            fontWeight: 500,
+                            color: "var(--xe-fg)",
+                          }}
+                        >
+                          {n.title}
+                        </span>
+                        <span
+                          style={{
+                            fontFamily: "var(--xe-font-mono)",
+                            fontSize: 10,
+                            color: "var(--xe-faint)",
+                          }}
+                        >
                           {n.timestamp}
                         </span>
                       </div>
-                      <p className="mt-1 text-[11px] text-zinc-400 leading-relaxed">
+                      <p
+                        style={{
+                          marginTop: 3,
+                          fontSize: 11,
+                          color: "var(--xe-muted)",
+                          fontFamily: "var(--xe-font-body)",
+                          lineHeight: 1.5,
+                        }}
+                      >
                         {n.message}
                       </p>
                     </div>
@@ -134,19 +293,27 @@ export default function Header({ title, subtitle, actionButton }: HeaderProps) {
           )}
         </div>
 
-        {/* Custom Header Action button (if any) or Default "Browse Library" button */}
-        {actionButton ? (
-          actionButton
-        ) : (
-          <button
-            type="button"
-            onClick={() => setCurrentView("library")}
-            className="pressable-btn flex h-9 items-center gap-1.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-3.5 text-xs font-semibold text-white shadow-lg shadow-cyan-500/20 transition hover:from-cyan-400 hover:to-blue-500"
-          >
-            <Plus size={14} />
-            <span>Add Widget</span>
-          </button>
-        )}
+        {/* Theme toggle */}
+        <button
+          type="button"
+          onClick={handleThemeToggle}
+          aria-label="Toggle theme"
+          className="xe-transition"
+          style={iconBtnStyle}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--xe-fg)";
+            (e.currentTarget as HTMLButtonElement).style.color = "var(--xe-fg)";
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--xe-border)";
+            (e.currentTarget as HTMLButtonElement).style.color = "var(--xe-muted)";
+          }}
+        >
+          {settings.theme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
+        </button>
+
+        {/* Optional action button slot */}
+        {actionButton}
       </div>
     </header>
   );

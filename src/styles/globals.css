@@ -1,197 +1,259 @@
+/* ============================================================
+   XE WIDGETS — GLOBAL DESIGN SYSTEM
+   Design language: Editorial Minimalism · Monochromatic
+   Typography: Geist Pixel · Geist Sans · Geist Mono
+   ============================================================ */
+
 @import "tailwindcss";
 
+/* ─── FONT FACES ─────────────────────────────────────────── */
+
+@font-face {
+  font-family: "Geist Pixel";
+  src: url("/fonts/geist-pixel/GeistPixel-Square.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist Pixel VF";
+  src: url("/fonts/geist-pixel/GeistPixelVF.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist Sans";
+  src: url("/fonts/geist-sans/Geist-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist Sans";
+  src: url("/fonts/geist-sans/Geist-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  src: url("/fonts/geist-mono/GeistMono-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  src: url("/fonts/geist-mono/GeistMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ─── DESIGN TOKENS: LIGHT THEME ────────────────────────── */
+
 :root {
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  /* ── Portfolio Colour System ── */
+  --xe-bg:           #EBE9E4;
+  --xe-fg:           #121212;
+  --xe-muted:        #696865;
+  --xe-faint:        #A8A6A3;
+  --xe-surface:      #DDDBD5;
+  --xe-surface-hover:#D5D3CD;
+  --xe-border:       #D0CEC9;
+  --xe-ink:          #0F0F0F;
+  --xe-accent:       #121212;
+  --xe-bg-glass:     rgba(235, 233, 228, 0.92);
 
-  /* Fluent Glass Tokens */
-  --bg-deep: #090a0f;
-  --bg-surface: rgba(18, 20, 29, 0.75);
-  --bg-surface-elevated: rgba(28, 32, 46, 0.85);
-  --bg-card: rgba(255, 255, 255, 0.035);
-  --bg-card-hover: rgba(255, 255, 255, 0.06);
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-highlight: rgba(255, 255, 255, 0.16);
+  /* ── Sidebar specific ── */
+  --xe-sidebar-bg:   #E4E2DC;
+  --xe-sidebar-border: #D0CEC9;
 
-  /* Accents */
-  --accent-cyan: #38bdf8;
-  --accent-purple: #a855f7;
-  --accent-emerald: #10b981;
-  --accent-amber: #f59e0b;
-  --accent-rose: #f43f5e;
+  /* ── Typography ── */
+  --xe-font-display: "Geist Pixel", "Courier New", monospace;
+  --xe-font-body:    "Geist Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --xe-font-mono:    "Geist Mono", "Cascadia Code", "Consolas", monospace;
 
-  /* Typography */
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-tertiary: #64748b;
+  /* ── Spacing scale ── */
+  --xe-space-xs:  4px;
+  --xe-space-sm:  8px;
+  --xe-space-md:  16px;
+  --xe-space-lg:  24px;
+  --xe-space-xl:  40px;
+  --xe-space-2xl: 64px;
 
-  /* Radii */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
+  /* ── Radius ── */
+  --xe-radius-sm: 4px;
+  --xe-radius-md: 8px;
+  --xe-radius-lg: 16px;
+
+  /* ── Motion ── */
+  --xe-ease:      cubic-bezier(0.16, 1, 0.3, 1);
+  --xe-ease-in:   cubic-bezier(0.4, 0, 1, 1);
+  --xe-ease-out:  cubic-bezier(0, 0, 0.2, 1);
+  --xe-duration:  200ms;
+  --xe-duration-slow: 350ms;
 }
 
-/* Theme variations */
-body[data-theme="obsidian"] {
-  --bg-deep: #030712;
-  --bg-surface: rgba(11, 15, 25, 0.82);
-  --bg-surface-elevated: rgba(17, 24, 39, 0.9);
+/* ─── DESIGN TOKENS: DARK THEME ─────────────────────────── */
+
+[data-theme="dark"] {
+  --xe-bg:           #111110;
+  --xe-fg:           #F0EEE9;
+  --xe-muted:        #7A7774;
+  --xe-faint:        #4D4B48;
+  --xe-surface:      #1C1B19;
+  --xe-surface-hover:#242320;
+  --xe-border:       #2A2825;
+  --xe-ink:          #F5F3EF;
+  --xe-accent:       #F0EEE9;
+  --xe-bg-glass:     rgba(17, 17, 16, 0.92);
+  --xe-sidebar-bg:   #161513;
+  --xe-sidebar-border:#2A2825;
 }
 
-body[data-theme="aurora"] {
-  --bg-deep: #070e1c;
-  --bg-surface: rgba(13, 27, 42, 0.78);
-  --bg-surface-elevated: rgba(27, 43, 68, 0.88);
-}
+/* ─── RESET & BASE ───────────────────────────────────────── */
 
-body[data-theme="cyberpunk"] {
-  --bg-deep: #0d0914;
-  --bg-surface: rgba(26, 16, 37, 0.82);
-  --bg-surface-elevated: rgba(42, 23, 61, 0.9);
-}
-
-body[data-theme="paper"] {
-  --bg-deep: #f1f5f9;
-  --bg-surface: rgba(255, 255, 255, 0.88);
-  --bg-surface-elevated: rgba(255, 255, 255, 0.98);
-  --bg-card: rgba(0, 0, 0, 0.03);
-  --bg-card-hover: rgba(0, 0, 0, 0.06);
-  --border-subtle: rgba(0, 0, 0, 0.08);
-  --border-highlight: rgba(0, 0, 0, 0.15);
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-tertiary: #64748b;
-}
-
-* {
+*, *::before, *::after {
   box-sizing: border-box;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-html,
-body {
   margin: 0;
   padding: 0;
+}
+
+html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background-color: var(--bg-deep);
-  color: var(--text-primary);
-  font-family: var(--font-sans);
+  background-color: var(--xe-bg);
+  color: var(--xe-fg);
+  font-family: var(--xe-font-body);
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern" 1, "liga" 1;
   user-select: none;
 }
 
-/* Numbers in gauges and clocks stay stable */
-.tabular-numbers,
-.tabular-num {
-  font-feature-settings: "tnum" 1;
-  font-variant-numeric: tabular-nums;
+#root {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-/* Micro-interaction: Press scales to 0.96 with 150ms ease-out (better-ui principle) */
-.pressable-btn {
-  transition: transform 150ms cubic-bezier(0.2, 0, 0, 1), background-color 150ms ease, border-color 150ms ease, opacity 150ms ease;
-  will-change: transform;
-}
-.pressable-btn:active:not(:disabled) {
-  transform: scale(0.96);
-}
+/* ─── TYPOGRAPHY UTILITIES ───────────────────────────────── */
 
-/* Glass panel with acrylic blur */
-.glass-panel {
-  background: var(--bg-surface);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--border-subtle);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
-}
+.font-display { font-family: var(--xe-font-display); }
+.font-body    { font-family: var(--xe-font-body); }
+.font-mono    { font-family: var(--xe-font-mono); }
 
-.glass-card {
-  background: var(--bg-card);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--border-subtle);
-  transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms cubic-bezier(0.2, 0, 0, 1);
-}
-.glass-card:hover {
-  background: var(--bg-card-hover);
-  border-color: var(--border-highlight);
-}
+/* ─── SCROLLBAR ──────────────────────────────────────────── */
 
-/* Custom Windows Titlebar drag region */
-[data-tauri-drag-region] {
-  app-region: drag;
-  -webkit-app-region: drag;
-}
-
-button, input, textarea, a, [role="button"], .no-drag {
-  app-region: no-drag;
-  -webkit-app-region: no-drag;
-}
-
-/* Modern sleek custom scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 9999px;
+  background: var(--xe-border);
+  border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.24);
+  background: var(--xe-faint);
 }
 
-/* Audio EQ Equalizer animation */
-@keyframes barBounce1 {
-  0%, 100% { height: 20%; }
-  50% { height: 95%; }
-}
-@keyframes barBounce2 {
-  0%, 100% { height: 80%; }
-  50% { height: 30%; }
-}
-@keyframes barBounce3 {
-  0%, 100% { height: 40%; }
-  50% { height: 100%; }
-}
-@keyframes barBounce4 {
-  0%, 100% { height: 90%; }
-  50% { height: 25%; }
-}
-@keyframes barBounce5 {
-  0%, 100% { height: 50%; }
-  50% { height: 85%; }
+/* ─── SELECTION ──────────────────────────────────────────── */
+
+::selection {
+  background: var(--xe-fg);
+  color: var(--xe-bg);
 }
 
-.animate-eq-1 { animation: barBounce1 0.8s ease-in-out infinite; }
-.animate-eq-2 { animation: barBounce2 0.7s ease-in-out infinite 0.15s; }
-.animate-eq-3 { animation: barBounce3 0.9s ease-in-out infinite 0.3s; }
-.animate-eq-4 { animation: barBounce4 0.65s ease-in-out infinite 0.1s; }
-.animate-eq-5 { animation: barBounce5 0.75s ease-in-out infinite 0.25s; }
+/* ─── FOCUS ──────────────────────────────────────────────── */
 
-/* Subtle pulse glow */
-@keyframes pulseGlow {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.85; }
-}
-.animate-pulse-glow {
-  animation: pulseGlow 3s ease-in-out infinite;
+:focus-visible {
+  outline: 1.5px solid var(--xe-fg);
+  outline-offset: 2px;
 }
 
-/* Respect reduced motion */
+/* ─── DIVIDERS & SEPARATORS ──────────────────────────────── */
+
+.xe-divider {
+  height: 1px;
+  background: var(--xe-border);
+  width: 100%;
+}
+
+/* ─── TRANSITIONS ────────────────────────────────────────── */
+
+.xe-transition {
+  transition: all var(--xe-duration) var(--xe-ease);
+}
+
+/* ─── SECTION NUMBER LABEL ───────────────────────────────── */
+
+.xe-section-label {
+  font-family: var(--xe-font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--xe-faint);
+}
+
+/* ─── STATUS DOT ─────────────────────────────────────────── */
+
+.xe-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--xe-muted);
+  flex-shrink: 0;
+}
+.xe-status-dot.active {
+  background: var(--xe-fg);
+}
+
+/* ─── TABULAR NUMBERS ────────────────────────────────────── */
+
+.tabnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* ─── DRAG REGION FOR TAURI ──────────────────────────────── */
+
+[data-tauri-drag-region] {
+  -webkit-app-region: drag;
+  app-region: drag;
+}
+button, input, textarea, select, a, [role="button"], .no-drag {
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+}
+
+/* ─── REDUCED MOTION ─────────────────────────────────────── */
+
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
   }
 }
+
+/* ─── MISC ───────────────────────────────────────────────── */
+
+button { cursor: pointer; font-family: inherit; border: none; background: none; }
+input, textarea { font-family: inherit; }

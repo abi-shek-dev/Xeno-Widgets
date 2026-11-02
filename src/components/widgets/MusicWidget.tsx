@@ -1,15 +1,16 @@
 import React from "react";
-import {
-  Music2,
-  Play,
-  Pause,
-  SkipBack,
-  SkipForward,
-  Volume2,
-  VolumeX,
-  Heart,
-} from "lucide-react";
+import { Music2, Play, Pause, SkipBack, SkipForward, Volume2, VolumeX } from "lucide-react";
 import { useWidgets } from "../../context/WidgetContext";
+
+const widgetContainer: React.CSSProperties = {
+  height: "100%",
+  display: "flex",
+  flexDirection: "column",
+  border: "1px solid var(--xe-border)",
+  borderRadius: 4,
+  background: "var(--xe-surface)",
+  overflow: "hidden",
+};
 
 export default function MusicWidget() {
   const {
@@ -24,123 +25,193 @@ export default function MusicWidget() {
     prevTrack,
   } = useWidgets();
 
-  const [isLiked, setIsLiked] = React.useState(false);
-
   const formatSeconds = (sec: number) => {
     const mins = Math.floor(sec / 60);
     const remaining = Math.floor(sec % 60);
     return `${mins}:${String(remaining).padStart(2, "0")}`;
   };
 
-  const progressPercent = Math.min(
-    100,
-    (trackProgress / currentTrack.duration) * 100
+  const progressPercent = Math.min(100, (trackProgress / currentTrack.duration) * 100);
+
+  const controlBtn = (onClick: () => void, children: React.ReactNode): React.ReactNode => (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: 28,
+        height: 28,
+        background: "transparent",
+        border: "1px solid var(--xe-border)",
+        borderRadius: 3,
+        cursor: "pointer",
+        color: "var(--xe-muted)",
+        transition: "all 150ms",
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--xe-fg)";
+        (e.currentTarget as HTMLButtonElement).style.color = "var(--xe-fg)";
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--xe-border)";
+        (e.currentTarget as HTMLButtonElement).style.color = "var(--xe-muted)";
+      }}
+    >
+      {children}
+    </button>
   );
 
   return (
-    <div className="glass-card flex h-full flex-col justify-between overflow-hidden rounded-2xl p-5">
+    <div style={widgetContainer}>
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
-        <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-            <Music2 size={15} />
-          </div>
-          <span className="text-xs font-semibold text-white">Audio & Media</span>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "8px 12px",
+          borderBottom: "1px solid var(--xe-border)",
+          flexShrink: 0,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <Music2 size={13} style={{ color: "var(--xe-muted)" }} />
+          <span
+            style={{
+              fontFamily: "var(--xe-font-mono)",
+              fontSize: 9,
+              color: "var(--xe-faint)",
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+            }}
+          >
+            MEDIA PLAYER
+          </span>
         </div>
-
-        {/* Animated Equalizer Visualizer */}
-        <div className="flex h-4 items-end gap-0.5 px-2">
-          <div
-            className={`w-0.5 rounded-full bg-emerald-400 ${
-              isPlaying ? "animate-eq-1" : "h-1"
-            }`}
-          />
-          <div
-            className={`w-0.5 rounded-full bg-emerald-400 ${
-              isPlaying ? "animate-eq-2" : "h-2"
-            }`}
-          />
-          <div
-            className={`w-0.5 rounded-full bg-emerald-400 ${
-              isPlaying ? "animate-eq-3" : "h-1.5"
-            }`}
-          />
-          <div
-            className={`w-0.5 rounded-full bg-emerald-400 ${
-              isPlaying ? "animate-eq-4" : "h-2.5"
-            }`}
-          />
-          <div
-            className={`w-0.5 rounded-full bg-emerald-400 ${
-              isPlaying ? "animate-eq-5" : "h-1"
-            }`}
-          />
+        {/* Simple playing indicator: 3 static bars */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-end",
+            gap: 2,
+            height: 14,
+            opacity: isPlaying ? 1 : 0.3,
+          }}
+        >
+          {[6, 10, 7, 12, 8].map((h, i) => (
+            <div
+              key={i}
+              style={{
+                width: 2,
+                height: h,
+                background: "var(--xe-muted)",
+                borderRadius: 1,
+              }}
+            />
+          ))}
         </div>
       </div>
 
-      {/* Track Display */}
-      <div className="my-auto py-2">
-        <div className="flex items-center gap-3">
-          <img
-            src={currentTrack.coverUrl}
-            alt={currentTrack.album}
-            className="h-14 w-14 rounded-xl object-cover shadow-md shadow-black/50 ring-1 ring-white/10"
-          />
-
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center justify-between">
-              <h4 className="truncate text-xs font-semibold text-white">
-                {currentTrack.title}
-              </h4>
-              <button
-                type="button"
-                onClick={() => setIsLiked((prev) => !prev)}
-                className={`p-1 transition ${
-                  isLiked ? "text-rose-400" : "text-zinc-500 hover:text-white"
-                }`}
-              >
-                <Heart size={13} fill={isLiked ? "currentColor" : "none"} />
-              </button>
-            </div>
-            <p className="truncate text-[11px] text-zinc-400">
-              {currentTrack.artist}
-            </p>
-            <p className="truncate text-[10px] text-zinc-500">
-              {currentTrack.album}
-            </p>
+      {/* Body */}
+      <div style={{ flex: 1, padding: "10px 12px", overflow: "hidden", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        {/* Track info */}
+        <div>
+          <div
+            style={{
+              fontFamily: "var(--xe-font-body)",
+              fontSize: 12,
+              fontWeight: 500,
+              color: "var(--xe-fg)",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {currentTrack.title}
+          </div>
+          <div
+            style={{
+              fontFamily: "var(--xe-font-body)",
+              fontSize: 11,
+              color: "var(--xe-muted)",
+              marginTop: 2,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {currentTrack.artist}
+          </div>
+          <div
+            style={{
+              fontFamily: "var(--xe-font-mono)",
+              fontSize: 9,
+              color: "var(--xe-faint)",
+              marginTop: 2,
+              letterSpacing: "0.04em",
+            }}
+          >
+            {currentTrack.album}
           </div>
         </div>
 
-        {/* Scrubber Progress Bar */}
-        <div className="mt-3">
+        {/* Progress bar */}
+        <div style={{ marginTop: 10 }}>
           <div
-            className="group relative h-1.5 w-full cursor-pointer rounded-full bg-white/[0.08]"
+            style={{
+              height: 3,
+              background: "var(--xe-border)",
+              borderRadius: 2,
+              cursor: "pointer",
+              overflow: "hidden",
+            }}
             onClick={(e) => {
               const rect = e.currentTarget.getBoundingClientRect();
-              const clickX = e.clientX - rect.left;
-              const ratio = Math.max(0, Math.min(1, clickX / rect.width));
+              const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
               setTrackProgress(Math.floor(ratio * currentTrack.duration));
             }}
           >
             <div
-              className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all"
-              style={{ width: `${progressPercent}%` }}
+              style={{
+                height: "100%",
+                width: `${progressPercent}%`,
+                background: "var(--xe-fg)",
+                borderRadius: 2,
+                transition: "width 300ms linear",
+              }}
             />
           </div>
-          <div className="mt-1 flex justify-between text-[10px] font-mono text-zinc-500">
+          <div
+            className="flex justify-between tabnum"
+            style={{
+              marginTop: 4,
+              fontFamily: "var(--xe-font-mono)",
+              fontSize: 9,
+              color: "var(--xe-faint)",
+            }}
+          >
             <span>{formatSeconds(trackProgress)}</span>
             <span>{formatSeconds(currentTrack.duration)}</span>
           </div>
         </div>
 
-        {/* Playback Controls */}
-        <div className="mt-2 flex items-center justify-between">
+        {/* Controls */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginTop: 8,
+          }}
+        >
           {/* Volume */}
-          <div className="flex items-center gap-1.5 text-zinc-400">
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <button
               type="button"
               onClick={() => setVolume(volume > 0 ? 0 : 75)}
-              className="hover:text-white"
+              style={{ color: "var(--xe-faint)", cursor: "pointer" }}
             >
               {volume === 0 ? <VolumeX size={13} /> : <Volume2 size={13} />}
             </button>
@@ -150,46 +221,52 @@ export default function MusicWidget() {
               max="100"
               value={volume}
               onChange={(e) => setVolume(Number(e.target.value))}
-              className="h-1 w-14 cursor-pointer accent-emerald-400"
+              style={{ width: 48, height: 3, cursor: "pointer", accentColor: "var(--xe-fg)" }}
             />
           </div>
-
-          {/* Transport buttons */}
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={prevTrack}
-              aria-label="Previous track"
-              className="pressable-btn flex h-7 w-7 items-center justify-center rounded-lg text-zinc-400 transition hover:bg-white/[0.08] hover:text-white"
-            >
-              <SkipBack size={14} />
-            </button>
-
+          {/* Transport */}
+          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+            {controlBtn(prevTrack, <SkipBack size={12} />)}
             <button
               type="button"
               onClick={togglePlay}
               aria-label={isPlaying ? "Pause" : "Play"}
-              className="pressable-btn flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500 text-black shadow-md shadow-emerald-500/20 transition hover:bg-emerald-400"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: 32,
+                height: 32,
+                background: "var(--xe-fg)",
+                color: "var(--xe-bg)",
+                border: "none",
+                borderRadius: 3,
+                cursor: "pointer",
+              }}
             >
-              {isPlaying ? <Pause size={15} /> : <Play size={15} className="ml-0.5" />}
+              {isPlaying ? <Pause size={13} /> : <Play size={13} />}
             </button>
-
-            <button
-              type="button"
-              onClick={nextTrack}
-              aria-label="Next track"
-              className="pressable-btn flex h-7 w-7 items-center justify-center rounded-lg text-zinc-400 transition hover:bg-white/[0.08] hover:text-white"
-            >
-              <SkipForward size={14} />
-            </button>
+            {controlBtn(nextTrack, <SkipForward size={12} />)}
           </div>
         </div>
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between border-t border-white/[0.06] pt-2 text-[10px] text-zinc-500">
-        <span>Output: Hi-Fi DirectSound</span>
-        <span>Lossless 24-bit</span>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          padding: "5px 12px",
+          borderTop: "1px solid var(--xe-border)",
+          flexShrink: 0,
+        }}
+      >
+        <span style={{ fontFamily: "var(--xe-font-mono)", fontSize: 9, color: "var(--xe-faint)" }}>
+          DIRECTSOUND
+        </span>
+        <span style={{ fontFamily: "var(--xe-font-mono)", fontSize: 9, color: "var(--xe-faint)" }}>
+          24-BIT
+        </span>
       </div>
     </div>
   );

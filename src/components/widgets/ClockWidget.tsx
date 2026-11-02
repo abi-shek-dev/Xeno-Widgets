@@ -1,14 +1,30 @@
-import React, { useState, useEffect } from "react";
-import {
-  Clock3,
-  Timer,
-  Hourglass,
-  Play,
-  Pause,
-  RotateCcw,
-  Globe2,
-} from "lucide-react";
+import { useState, useEffect } from "react";
+import { Clock3, Play, Pause, Globe2 } from "lucide-react";
 import { useWidgets } from "../../context/WidgetContext";
+
+const widgetContainer: React.CSSProperties = {
+  height: "100%",
+  display: "flex",
+  flexDirection: "column",
+  border: "1px solid var(--xe-border)",
+  borderRadius: 4,
+  background: "var(--xe-surface)",
+  overflow: "hidden",
+};
+
+const tabBtn = (active: boolean): React.CSSProperties => ({
+  padding: "3px 8px",
+  fontSize: 10,
+  fontFamily: "var(--xe-font-mono)",
+  letterSpacing: "0.04em",
+  textTransform: "uppercase",
+  cursor: "pointer",
+  background: active ? "var(--xe-fg)" : "transparent",
+  color: active ? "var(--xe-bg)" : "var(--xe-muted)",
+  border: "1px solid var(--xe-border)",
+  borderRadius: 3,
+  transition: "all 150ms",
+});
 
 export default function ClockWidget() {
   const { settings } = useWidgets();
@@ -24,11 +40,10 @@ export default function ClockWidget() {
   }, []);
 
   const getTimeForZone = () => {
-    let timeZone = undefined;
+    let timeZone: string | undefined = undefined;
     if (selectedZone === "london") timeZone = "Europe/London";
     if (selectedZone === "tokyo") timeZone = "Asia/Tokyo";
     if (selectedZone === "ny") timeZone = "America/New_York";
-
     return time.toLocaleTimeString([], {
       timeZone,
       hour: "2-digit",
@@ -39,11 +54,10 @@ export default function ClockWidget() {
   };
 
   const getDateForZone = () => {
-    let timeZone = undefined;
+    let timeZone: string | undefined = undefined;
     if (selectedZone === "london") timeZone = "Europe/London";
     if (selectedZone === "tokyo") timeZone = "Asia/Tokyo";
     if (selectedZone === "ny") timeZone = "America/New_York";
-
     return time.toLocaleDateString(undefined, {
       timeZone,
       weekday: "short",
@@ -53,17 +67,15 @@ export default function ClockWidget() {
   };
 
   // Stopwatch state
-  const [swTime, setSwTime] = useState(0); // in tenths of a second
+  const [swTime, setSwTime] = useState(0);
   const [swRunning, setSwRunning] = useState(false);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
+    let interval: ReturnType<typeof setInterval> | null = null;
     if (swRunning) {
       interval = setInterval(() => setSwTime((prev) => prev + 1), 100);
     }
-    return () => {
-      if (interval) clearInterval(interval);
-    };
+    return () => { if (interval) clearInterval(interval); };
   }, [swRunning]);
 
   const formatStopwatch = (tenths: number) => {
@@ -78,21 +90,16 @@ export default function ClockWidget() {
   const [pomoRunning, setPomoRunning] = useState(false);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
+    let interval: ReturnType<typeof setInterval> | null = null;
     if (pomoRunning) {
       interval = setInterval(() => {
         setPomoSeconds((prev) => {
-          if (prev <= 1) {
-            setPomoRunning(false);
-            return 25 * 60;
-          }
+          if (prev <= 1) { setPomoRunning(false); return 25 * 60; }
           return prev - 1;
         });
       }, 1000);
     }
-    return () => {
-      if (interval) clearInterval(interval);
-    };
+    return () => { if (interval) clearInterval(interval); };
   }, [pomoRunning]);
 
   const formatPomodoro = (sec: number) => {
@@ -101,73 +108,128 @@ export default function ClockWidget() {
     return `${String(mins).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
   };
 
-  return (
-    <div className="glass-card relative flex h-full flex-col justify-between overflow-hidden rounded-2xl p-5">
-      {/* Widget Header & Modes */}
-      <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
-        <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/20">
-            <Clock3 size={15} />
-          </div>
-          <span className="text-xs font-semibold text-white">Precision Clock</span>
-        </div>
+  const actionBtn = (label: string, onClick: () => void, primary = false): React.ReactNode => (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 4,
+        padding: "4px 12px",
+        fontSize: 11,
+        fontFamily: "var(--xe-font-mono)",
+        letterSpacing: "0.04em",
+        cursor: "pointer",
+        background: primary ? "var(--xe-fg)" : "transparent",
+        color: primary ? "var(--xe-bg)" : "var(--xe-muted)",
+        border: "1px solid var(--xe-border)",
+        borderRadius: 3,
+        transition: "all 150ms",
+      }}
+    >
+      {label}
+    </button>
+  );
 
-        {/* Mode Selector */}
-        <div className="flex items-center rounded-lg bg-white/[0.04] p-0.5 text-[10px] text-zinc-400">
-          <button
-            type="button"
-            onClick={() => setActiveTab("clock")}
-            className={`rounded-md px-2 py-1 transition ${
-              activeTab === "clock" ? "bg-white/[0.1] text-white font-medium" : "hover:text-zinc-200"
-            }`}
+  return (
+    <div style={widgetContainer}>
+      {/* Header */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "8px 12px",
+          borderBottom: "1px solid var(--xe-border)",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <Clock3 size={13} style={{ color: "var(--xe-muted)" }} />
+          <span
+            style={{
+              fontFamily: "var(--xe-font-mono)",
+              fontSize: 9,
+              color: "var(--xe-faint)",
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+            }}
           >
-            Clock
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("stopwatch")}
-            className={`rounded-md px-2 py-1 transition ${
-              activeTab === "stopwatch" ? "bg-white/[0.1] text-white font-medium" : "hover:text-zinc-200"
-            }`}
-          >
-            Stopwatch
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("pomodoro")}
-            className={`rounded-md px-2 py-1 transition ${
-              activeTab === "pomodoro" ? "bg-white/[0.1] text-white font-medium" : "hover:text-zinc-200"
-            }`}
-          >
-            Focus
-          </button>
+            PRECISION CLOCK
+          </span>
+        </div>
+        <div style={{ display: "flex", gap: 3 }}>
+          {(["clock", "stopwatch", "pomodoro"] as const).map((tab) => (
+            <button
+              key={tab}
+              type="button"
+              onClick={() => setActiveTab(tab)}
+              style={tabBtn(activeTab === tab)}
+            >
+              {tab === "clock" ? "CLK" : tab === "stopwatch" ? "SW" : "FCS"}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Main Display Area */}
-      <div className="my-auto py-3 text-center">
+      {/* Body */}
+      <div
+        className="flex-1 flex flex-col items-center justify-center"
+        style={{ padding: "12px", overflow: "hidden" }}
+      >
         {activeTab === "clock" && (
-          <div>
-            <div className="tabular-num font-mono text-3xl sm:text-4xl font-bold tracking-tight text-white drop-shadow-md">
+          <div style={{ textAlign: "center" }}>
+            <div
+              className="tabnum"
+              style={{
+                fontFamily: "var(--xe-font-mono)",
+                fontSize: 30,
+                fontWeight: 400,
+                color: "var(--xe-fg)",
+                letterSpacing: "0.02em",
+                lineHeight: 1,
+              }}
+            >
               {getTimeForZone()}
             </div>
-            <div className="mt-1 text-xs font-medium text-sky-300">
+            <div
+              style={{
+                marginTop: 6,
+                fontFamily: "var(--xe-font-body)",
+                fontSize: 11,
+                color: "var(--xe-muted)",
+              }}
+            >
               {getDateForZone()}
             </div>
-
-            {/* Timezone Switcher */}
-            <div className="mt-4 flex items-center justify-center gap-1.5">
-              <Globe2 size={12} className="text-zinc-500 mr-1" />
+            <div
+              style={{
+                marginTop: 12,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 4,
+              }}
+            >
+              <Globe2 size={11} style={{ color: "var(--xe-faint)" }} />
               {(["local", "ny", "london", "tokyo"] as const).map((z) => (
                 <button
                   key={z}
                   type="button"
                   onClick={() => setSelectedZone(z)}
-                  className={`pressable-btn rounded-md border px-2 py-0.5 text-[10px] uppercase font-mono transition ${
-                    selectedZone === z
-                      ? "border-sky-500/40 bg-sky-500/10 text-sky-300"
-                      : "border-white/[0.05] bg-white/[0.02] text-zinc-500 hover:text-zinc-300"
-                  }`}
+                  style={{
+                    padding: "2px 6px",
+                    fontSize: 9,
+                    fontFamily: "var(--xe-font-mono)",
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                    cursor: "pointer",
+                    background: selectedZone === z ? "var(--xe-fg)" : "transparent",
+                    color: selectedZone === z ? "var(--xe-bg)" : "var(--xe-faint)",
+                    border: "1px solid var(--xe-border)",
+                    borderRadius: 2,
+                    transition: "all 150ms",
+                  }}
                 >
                   {z}
                 </button>
@@ -177,72 +239,134 @@ export default function ClockWidget() {
         )}
 
         {activeTab === "stopwatch" && (
-          <div>
-            <div className="tabular-num font-mono text-3xl sm:text-4xl font-bold tracking-tight text-white">
+          <div style={{ textAlign: "center" }}>
+            <div
+              className="tabnum"
+              style={{
+                fontFamily: "var(--xe-font-mono)",
+                fontSize: 30,
+                color: "var(--xe-fg)",
+                letterSpacing: "0.02em",
+                lineHeight: 1,
+              }}
+            >
               {formatStopwatch(swTime)}
             </div>
-            <p className="mt-1 text-[11px] text-zinc-500">Elapsed Stopwatch Timer</p>
-            <div className="mt-4 flex items-center justify-center gap-2">
+            <div
+              style={{
+                marginTop: 4,
+                fontFamily: "var(--xe-font-body)",
+                fontSize: 11,
+                color: "var(--xe-faint)",
+              }}
+            >
+              Elapsed Time
+            </div>
+            <div style={{ marginTop: 12, display: "flex", gap: 6, justifyContent: "center" }}>
               <button
                 type="button"
                 onClick={() => setSwRunning((prev) => !prev)}
-                className={`pressable-btn flex items-center gap-1.5 rounded-xl px-4 py-1.5 text-xs font-semibold text-white transition ${
-                  swRunning ? "bg-amber-500 hover:bg-amber-400" : "bg-emerald-500 hover:bg-emerald-400"
-                }`}
-              >
-                {swRunning ? <Pause size={12} /> : <Play size={12} />}
-                <span>{swRunning ? "Pause" : "Start"}</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setSwRunning(false);
-                  setSwTime(0);
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 4,
+                  padding: "4px 14px",
+                  fontSize: 11,
+                  fontFamily: "var(--xe-font-mono)",
+                  cursor: "pointer",
+                  background: "var(--xe-fg)",
+                  color: "var(--xe-bg)",
+                  border: "none",
+                  borderRadius: 3,
                 }}
-                className="pressable-btn flex items-center gap-1.5 rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-1.5 text-xs text-zinc-300 hover:bg-white/[0.08]"
               >
-                <RotateCcw size={12} />
-                <span>Reset</span>
+                {swRunning ? <Pause size={11} /> : <Play size={11} />}
+                {swRunning ? "PAUSE" : "START"}
               </button>
+              {actionBtn("RESET", () => { setSwRunning(false); setSwTime(0); })}
             </div>
           </div>
         )}
 
         {activeTab === "pomodoro" && (
-          <div>
-            <div className="tabular-num font-mono text-3xl sm:text-4xl font-bold tracking-tight text-purple-300">
+          <div style={{ textAlign: "center" }}>
+            <div
+              className="tabnum"
+              style={{
+                fontFamily: "var(--xe-font-mono)",
+                fontSize: 30,
+                color: "var(--xe-fg)",
+                letterSpacing: "0.02em",
+                lineHeight: 1,
+              }}
+            >
               {formatPomodoro(pomoSeconds)}
             </div>
-            <p className="mt-1 text-[11px] text-zinc-400">Pomodoro 25m Focus Block</p>
-            <div className="mt-4 flex items-center justify-center gap-2">
+            <div
+              style={{
+                marginTop: 4,
+                fontFamily: "var(--xe-font-body)",
+                fontSize: 11,
+                color: "var(--xe-faint)",
+              }}
+            >
+              25m Focus Block
+            </div>
+            <div style={{ marginTop: 12, display: "flex", gap: 6, justifyContent: "center" }}>
               <button
                 type="button"
                 onClick={() => setPomoRunning((prev) => !prev)}
-                className="pressable-btn flex items-center gap-1.5 rounded-xl bg-purple-600 px-4 py-1.5 text-xs font-semibold text-white transition hover:bg-purple-500"
-              >
-                {pomoRunning ? <Pause size={12} /> : <Play size={12} />}
-                <span>{pomoRunning ? "Pause" : "Start Focus"}</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setPomoRunning(false);
-                  setPomoSeconds(25 * 60);
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 4,
+                  padding: "4px 14px",
+                  fontSize: 11,
+                  fontFamily: "var(--xe-font-mono)",
+                  cursor: "pointer",
+                  background: "var(--xe-fg)",
+                  color: "var(--xe-bg)",
+                  border: "none",
+                  borderRadius: 3,
                 }}
-                className="pressable-btn flex items-center gap-1.5 rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-1.5 text-xs text-zinc-300 hover:bg-white/[0.08]"
               >
-                <RotateCcw size={12} />
-                <span>Reset</span>
+                {pomoRunning ? <Pause size={11} /> : <Play size={11} />}
+                {pomoRunning ? "PAUSE" : "FOCUS"}
               </button>
+              {actionBtn("RESET", () => { setPomoRunning(false); setPomoSeconds(25 * 60); })}
             </div>
           </div>
         )}
       </div>
 
-      {/* Footer info */}
-      <div className="flex items-center justify-between border-t border-white/[0.06] pt-2 text-[10px] text-zinc-500">
-        <span>Time Sync: Local NTP</span>
-        <span className="font-mono text-zinc-400">±0.2 ms</span>
+      {/* Footer */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          padding: "6px 12px",
+          borderTop: "1px solid var(--xe-border)",
+        }}
+      >
+        <span
+          style={{
+            fontFamily: "var(--xe-font-mono)",
+            fontSize: 9,
+            color: "var(--xe-faint)",
+            letterSpacing: "0.04em",
+          }}
+        >
+          NTP SYNC
+        </span>
+        <span
+          style={{
+            fontFamily: "var(--xe-font-mono)",
+            fontSize: 9,
+            color: "var(--xe-faint)",
+          }}
+        >
+          ±0.2ms
+        </span>
       </div>
     </div>
   );

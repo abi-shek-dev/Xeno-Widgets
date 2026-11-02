@@ -16,7 +16,6 @@ export interface WidgetMetadata {
   defaultSize: WidgetSize;
   isActive: boolean;
   isPinned: boolean;
-  accentColor: string;
 }
 
 export interface SystemMetrics {
@@ -69,22 +68,8 @@ export interface WeatherData {
   }[];
 }
 
-export interface AppThemeConfig {
-  id: "slate" | "obsidian" | "aurora" | "cyberpunk" | "paper";
-  name: string;
-  primaryBg: string;
-  cardBg: string;
-  accent: string;
-  border: string;
-  textPrimary: string;
-  textSecondary: string;
-  glow: string;
-}
-
 export interface AppSettings {
-  themeId: "slate" | "obsidian" | "aurora" | "cyberpunk" | "paper";
-  glassOpacity: number;
-  blurStrength: number;
+  theme: "light" | "dark";
   enableSounds: boolean;
   alwaysOnTop: boolean;
   startWithWindows: boolean;
