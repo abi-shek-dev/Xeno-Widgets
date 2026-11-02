@@ -19,12 +19,13 @@ export default function CommandPalette() {
     setIsCommandPaletteOpen,
     setCurrentView,
     widgets,
-    toggleWidget,
     isPlaying,
     togglePlay,
     updateSettings,
     settings,
     addNotification,
+    toggleWidgetOnDesktop,
+    isWidgetOnDesktop,
   } = useWidgets();
 
   const [query, setQuery] = useState("");
@@ -253,11 +254,7 @@ export default function CommandPalette() {
                     type="button"
                     onClick={() =>
                       runAction(() => {
-                        toggleWidget(widget.id);
-                        addNotification(
-                          widget.isActive ? "Widget Deactivated" : "Widget Activated",
-                          `${widget.name} status updated.`
-                        );
+                        toggleWidgetOnDesktop(widget.id);
                       })
                     }
                     style={itemStyle}
@@ -297,7 +294,8 @@ export default function CommandPalette() {
                         fontSize: 9,
                         letterSpacing: "0.06em",
                         textTransform: "uppercase",
-                        color: widget.isActive ? "var(--xe-fg)" : "var(--xe-faint)",
+                        color: isWidgetOnDesktop(widget.id) ? "var(--xe-fg)" : "var(--xe-faint)",
+                        background: isWidgetOnDesktop(widget.id) ? "var(--xe-border)" : "transparent",
                         padding: "2px 6px",
                         border: "1px solid var(--xe-border)",
                         borderRadius: 2,
@@ -305,7 +303,7 @@ export default function CommandPalette() {
                         marginLeft: 12,
                       }}
                     >
-                      {widget.isActive ? "ACTIVE" : "AVAILABLE"}
+                      {isWidgetOnDesktop(widget.id) ? "ON DESKTOP" : "LAUNCH WINDOW"}
                     </span>
                   </button>
                 ))}

@@ -1,4 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from "react";
+import {
+  openWidgetWindow,
+  closeWidgetWindow,
+  focusWidgetWindow,
+  toggleWidgetWindow,
+  getOpenWidgetWindows,
+} from "../services/desktopWidgetService";
 import type {
   NavView,
   WidgetMetadata,
@@ -23,6 +30,14 @@ interface WidgetContextType {
   toggleWidget: (id: string) => void;
   togglePinWidget: (id: string) => void;
   activeWidgets: WidgetMetadata[];
+
+  // Desktop Floating Windows
+  openDesktopWidgets: string[];
+  openWidgetOnDesktop: (id: string) => Promise<void>;
+  closeWidgetOnDesktop: (id: string) => Promise<void>;
+  focusWidgetOnDesktop: (id: string) => Promise<void>;
+  toggleWidgetOnDesktop: (id: string) => Promise<boolean>;
+  isWidgetOnDesktop: (id: string) => boolean;
 
   // System Metrics
   metrics: SystemMetrics;
@@ -268,6 +283,98 @@ export function WidgetProvider({ children }: { children: React.ReactNode }) {
 
   const activeWidgets = useMemo(() => widgets.filter((w) => w.isActive), [widgets]);
 
+  // Desktop Floating Widget Windows Management
+  const [openDesktopWidgets, setOpenDesktopWidgets] = useState<string[]>([]);
+
+  const refreshDesktopWidgets = useCallback(async () => {
+    try {
+      const list = await getOpenWidgetWindows();
+      setOpenDesktopWidgets(list);
+    } catch (e) {
+      console.error("Error checking open desktop widgets:", e);
+    }
+  }, []);
+
+  useEffect(() => {
+    refreshDesktopWidgets();
+    const interval = setInterval(refreshDesktopWidgets, 1500);
+    window.addEventListener("focus", refreshDesktopWidgets);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("focus", refreshDesktopWidgets);
+    };
+  }, [refreshDesktopWidgets]);
+
+  const openWidgetOnDesktop = useCallback(
+    async (id: string) => {
+      try {
+        await openWidgetWindow(id);
+        await refreshDesktopWidgets();
+        const w = widgets.find((item) => item.id === id);
+        addNotification("Desktop Window", `${w?.name || id} opened on desktop.`, "success");
+      } catch (e) {
+        console.error(`Failed to launch desktop widget ${id}:`, e);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [refreshDesktopWidgets, widgets]
+  );
+
+  const closeWidgetOnDesktop = useCallback(
+    async (id: string) => {
+      try {
+        await closeWidgetWindow(id);
+        await refreshDesktopWidgets();
+        const w = widgets.find((item) => item.id === id);
+        addNotification("Desktop Window", `${w?.name || id} closed from desktop.`, "info");
+      } catch (e) {
+        console.error(`Failed to close desktop widget ${id}:`, e);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [refreshDesktopWidgets, widgets]
+  );
+
+  const focusWidgetOnDesktop = useCallback(
+    async (id: string) => {
+      try {
+        await focusWidgetWindow(id);
+        await refreshDesktopWidgets();
+      } catch (e) {
+        console.error(`Failed to focus desktop widget ${id}:`, e);
+      }
+    },
+    [refreshDesktopWidgets]
+  );
+
+  const toggleWidgetOnDesktop = useCallback(
+    async (id: string) => {
+      try {
+        const opened = await toggleWidgetWindow(id);
+        await refreshDesktopWidgets();
+        const w = widgets.find((item) => item.id === id);
+        if (opened) {
+          addNotification("Desktop Window", `${w?.name || id} opened on desktop.`, "success");
+        } else {
+          addNotification("Desktop Window", `${w?.name || id} closed from desktop.`, "info");
+        }
+        return opened;
+      } catch (e) {
+        console.error(`Failed to toggle desktop widget ${id}:`, e);
+        return false;
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [refreshDesktopWidgets, widgets]
+  );
+
+  const isWidgetOnDesktop = useCallback(
+    (id: string) => {
+      return openDesktopWidgets.includes(id);
+    },
+    [openDesktopWidgets]
+  );
+
   // System Metrics live update
   const [metrics, setMetrics] = useState<SystemMetrics>({
     cpuUsage: 28,
@@ -506,6 +613,12 @@ export function WidgetProvider({ children }: { children: React.ReactNode }) {
     toggleWidget,
     togglePinWidget,
     activeWidgets,
+    openDesktopWidgets,
+    openWidgetOnDesktop,
+    closeWidgetOnDesktop,
+    focusWidgetOnDesktop,
+    toggleWidgetOnDesktop,
+    isWidgetOnDesktop,
     metrics,
     notes,
     addNote,

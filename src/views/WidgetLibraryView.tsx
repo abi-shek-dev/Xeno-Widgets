@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search } from "lucide-react";
+import { Search, ExternalLink, Focus } from "lucide-react";
 import Header from "../components/layout/Header";
 import { useWidgets } from "../context/WidgetContext";
 import type { WidgetCategory } from "../types";
@@ -16,7 +16,15 @@ const ICON_MAP: Record<string, string> = {
 };
 
 export default function WidgetLibraryView() {
-  const { widgets, toggleWidget, togglePinWidget, addNotification } = useWidgets();
+  const {
+    widgets,
+    toggleWidget,
+    togglePinWidget,
+    addNotification,
+    isWidgetOnDesktop,
+    openWidgetOnDesktop,
+    focusWidgetOnDesktop,
+  } = useWidgets();
   const [selectedCategory, setSelectedCategory] = useState<WidgetCategory>("All");
   const [search, setSearch] = useState("");
 
@@ -33,7 +41,7 @@ export default function WidgetLibraryView() {
     <div className="flex h-full flex-col overflow-hidden">
       <Header
         title="Widget Library"
-        subtitle="Discover, activate, and manage companion widgets."
+        subtitle="Discover, activate, and launch native desktop widgets."
       />
 
       <div className="flex-1 overflow-y-auto" style={{ padding: "28px 40px" }}>
@@ -142,197 +150,248 @@ export default function WidgetLibraryView() {
               background: "var(--xe-border)",
             }}
           >
-            {filteredWidgets.map((widget) => (
-              <div
-                key={widget.id}
-                className="xe-transition"
-                style={{
-                  padding: "20px",
-                  background: "var(--xe-bg)",
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-                onMouseEnter={(e) =>
-                  ((e.currentTarget as HTMLDivElement).style.background = "var(--xe-surface)")
-                }
-                onMouseLeave={(e) =>
-                  ((e.currentTarget as HTMLDivElement).style.background = "var(--xe-bg)")
-                }
-              >
-                {/* Top bar */}
-                <div className="flex items-start justify-between" style={{ marginBottom: 12 }}>
-                  <span
-                    style={{
-                      fontFamily: "var(--xe-font-mono)",
-                      fontSize: 20,
-                      color: "var(--xe-faint)",
-                      lineHeight: 1,
-                    }}
-                  >
-                    {ICON_MAP[widget.id] ?? "◆"}
-                  </span>
-                  <div className="flex items-center" style={{ gap: 6 }}>
-                    {/* Pin button */}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        togglePinWidget(widget.id);
-                        addNotification(
-                          widget.isPinned ? "Unpinned" : "Pinned",
-                          `${widget.name} pin state changed.`
-                        );
-                      }}
-                      title={widget.isPinned ? "Unpin" : "Pin to top"}
-                      className="xe-transition"
-                      style={{
-                        width: 22,
-                        height: 22,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        border: "1px solid var(--xe-border)",
-                        borderRadius: 3,
-                        cursor: "pointer",
-                        background: widget.isPinned ? "var(--xe-fg)" : "transparent",
-                        color: widget.isPinned ? "var(--xe-bg)" : "var(--xe-faint)",
-                        fontSize: 10,
-                        fontFamily: "var(--xe-font-mono)",
-                      }}
-                    >
-                      ◈
-                    </button>
-                    {/* Status badge */}
+            {filteredWidgets.map((widget) => {
+              const onDesktop = isWidgetOnDesktop(widget.id);
+
+              return (
+                <div
+                  key={widget.id}
+                  className="xe-transition"
+                  style={{
+                    padding: "20px",
+                    background: "var(--xe-bg)",
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                  onMouseEnter={(e) =>
+                    ((e.currentTarget as HTMLDivElement).style.background = "var(--xe-surface)")
+                  }
+                  onMouseLeave={(e) =>
+                    ((e.currentTarget as HTMLDivElement).style.background = "var(--xe-bg)")
+                  }
+                >
+                  {/* Top bar */}
+                  <div className="flex items-start justify-between" style={{ marginBottom: 12 }}>
                     <span
                       style={{
                         fontFamily: "var(--xe-font-mono)",
-                        fontSize: 9,
-                        letterSpacing: "0.06em",
-                        textTransform: "uppercase" as const,
-                        color: widget.isActive ? "var(--xe-fg)" : "var(--xe-faint)",
-                        padding: "2px 6px",
-                        border: `1px solid ${widget.isActive ? "var(--xe-fg)" : "var(--xe-border)"}`,
-                        borderRadius: 2,
+                        fontSize: 20,
+                        color: "var(--xe-faint)",
+                        lineHeight: 1,
                       }}
                     >
-                      {widget.isActive ? "ACTIVE" : "AVAILABLE"}
+                      {ICON_MAP[widget.id] ?? "◆"}
+                    </span>
+                    <div className="flex items-center" style={{ gap: 6 }}>
+                      {/* Desktop Live Indicator */}
+                      {onDesktop && (
+                        <span
+                          style={{
+                            fontFamily: "var(--xe-font-mono)",
+                            fontSize: 9,
+                            letterSpacing: "0.06em",
+                            textTransform: "uppercase",
+                            color: "var(--xe-fg)",
+                            background: "var(--xe-border)",
+                            padding: "2px 6px",
+                            borderRadius: 2,
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 4,
+                          }}
+                        >
+                          <span className="xe-status-dot active" style={{ width: 4, height: 4 }} />
+                          ON DESKTOP
+                        </span>
+                      )}
+
+                      {/* Pin button */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          togglePinWidget(widget.id);
+                          addNotification(
+                            widget.isPinned ? "Unpinned" : "Pinned",
+                            `${widget.name} pin state changed.`
+                          );
+                        }}
+                        title={widget.isPinned ? "Unpin" : "Pin to top"}
+                        className="xe-transition"
+                        style={{
+                          width: 22,
+                          height: 22,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          border: "1px solid var(--xe-border)",
+                          borderRadius: 3,
+                          cursor: "pointer",
+                          background: widget.isPinned ? "var(--xe-fg)" : "transparent",
+                          color: widget.isPinned ? "var(--xe-bg)" : "var(--xe-faint)",
+                          fontSize: 10,
+                          fontFamily: "var(--xe-font-mono)",
+                        }}
+                      >
+                        ◈
+                      </button>
+
+                      {/* Status badge */}
+                      <span
+                        style={{
+                          fontFamily: "var(--xe-font-mono)",
+                          fontSize: 9,
+                          letterSpacing: "0.06em",
+                          textTransform: "uppercase" as const,
+                          color: widget.isActive ? "var(--xe-fg)" : "var(--xe-faint)",
+                          padding: "2px 6px",
+                          border: `1px solid ${widget.isActive ? "var(--xe-fg)" : "var(--xe-border)"}`,
+                          borderRadius: 2,
+                        }}
+                      >
+                        {widget.isActive ? "ACTIVE" : "AVAILABLE"}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Name + version */}
+                  <div className="flex items-baseline" style={{ gap: 6, marginBottom: 6 }}>
+                    <h4
+                      style={{
+                        fontFamily: "var(--xe-font-body)",
+                        fontSize: 13,
+                        fontWeight: 500,
+                        color: "var(--xe-fg)",
+                      }}
+                    >
+                      {widget.name}
+                    </h4>
+                    <span
+                      style={{
+                        fontFamily: "var(--xe-font-mono)",
+                        fontSize: 10,
+                        color: "var(--xe-faint)",
+                      }}
+                    >
+                      v{widget.version}
                     </span>
                   </div>
-                </div>
 
-                {/* Name + version */}
-                <div className="flex items-baseline" style={{ gap: 6, marginBottom: 6 }}>
-                  <h4
-                    style={{
-                      fontFamily: "var(--xe-font-body)",
-                      fontSize: 13,
-                      fontWeight: 500,
-                      color: "var(--xe-fg)",
-                    }}
-                  >
-                    {widget.name}
-                  </h4>
-                  <span
-                    style={{
-                      fontFamily: "var(--xe-font-mono)",
-                      fontSize: 10,
-                      color: "var(--xe-faint)",
-                    }}
-                  >
-                    v{widget.version}
-                  </span>
-                </div>
-
-                {/* Description */}
-                <p
-                  style={{
-                    fontFamily: "var(--xe-font-body)",
-                    fontSize: 11,
-                    color: "var(--xe-muted)",
-                    lineHeight: 1.55,
-                    marginBottom: 10,
-                    flex: 1,
-                    overflow: "hidden",
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical" as const,
-                  }}
-                >
-                  {widget.description}
-                </p>
-
-                {/* Tags */}
-                <div className="flex flex-wrap" style={{ gap: 4, marginBottom: 14 }}>
-                  {widget.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      style={{
-                        fontFamily: "var(--xe-font-mono)",
-                        fontSize: 9,
-                        color: "var(--xe-faint)",
-                        letterSpacing: "0.04em",
-                      }}
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Footer */}
-                <div
-                  className="flex items-center justify-between"
-                  style={{
-                    paddingTop: 12,
-                    borderTop: "1px solid var(--xe-border)",
-                  }}
-                >
-                  <span
+                  {/* Description */}
+                  <p
                     style={{
                       fontFamily: "var(--xe-font-body)",
                       fontSize: 11,
-                      color: "var(--xe-faint)",
+                      color: "var(--xe-muted)",
+                      lineHeight: 1.55,
+                      marginBottom: 10,
+                      flex: 1,
+                      overflow: "hidden",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical" as const,
                     }}
                   >
-                    {widget.author}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      toggleWidget(widget.id);
-                      addNotification(
-                        widget.isActive ? "Widget Deactivated" : "Widget Activated",
-                        `${widget.name} is now ${widget.isActive ? "disabled" : "running"}.`,
-                        widget.isActive ? "info" : "success"
-                      );
-                    }}
-                    className="xe-transition"
+                    {widget.description}
+                  </p>
+
+                  {/* Tags */}
+                  <div className="flex flex-wrap" style={{ gap: 4, marginBottom: 14 }}>
+                    {widget.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        style={{
+                          fontFamily: "var(--xe-font-mono)",
+                          fontSize: 9,
+                          color: "var(--xe-faint)",
+                          letterSpacing: "0.04em",
+                        }}
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Footer Actions */}
+                  <div
+                    className="flex items-center justify-between"
                     style={{
-                      fontFamily: "var(--xe-font-mono)",
-                      fontSize: 10,
-                      letterSpacing: "0.04em",
-                      textTransform: "uppercase" as const,
-                      color: widget.isActive ? "var(--xe-muted)" : "var(--xe-fg)",
-                      background: "transparent",
-                      border: "1px solid var(--xe-border)",
-                      borderRadius: 3,
-                      padding: "4px 10px",
-                      cursor: "pointer",
-                    }}
-                    onMouseEnter={(e) => {
-                      (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--xe-fg)";
-                      (e.currentTarget as HTMLButtonElement).style.color = "var(--xe-fg)";
-                    }}
-                    onMouseLeave={(e) => {
-                      (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--xe-border)";
-                      (e.currentTarget as HTMLButtonElement).style.color = widget.isActive
-                        ? "var(--xe-muted)"
-                        : "var(--xe-fg)";
+                      paddingTop: 12,
+                      borderTop: "1px solid var(--xe-border)",
+                      gap: 8,
                     }}
                   >
-                    {widget.isActive ? "DISABLE" : "ENABLE"}
-                  </button>
+                    {/* Native Desktop Window Launch Action */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (onDesktop) {
+                          focusWidgetOnDesktop(widget.id);
+                        } else {
+                          openWidgetOnDesktop(widget.id);
+                        }
+                      }}
+                      className="xe-transition"
+                      style={{
+                        fontFamily: "var(--xe-font-mono)",
+                        fontSize: 10,
+                        letterSpacing: "0.04em",
+                        textTransform: "uppercase" as const,
+                        color: onDesktop ? "var(--xe-fg)" : "var(--xe-bg)",
+                        background: onDesktop ? "var(--xe-surface)" : "var(--xe-fg)",
+                        border: onDesktop ? "1px solid var(--xe-fg)" : "none",
+                        borderRadius: 3,
+                        padding: "5px 10px",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 4,
+                      }}
+                    >
+                      {onDesktop ? <Focus size={10} /> : <ExternalLink size={10} />}
+                      {onDesktop ? "FOCUS WINDOW" : "OPEN ON DESKTOP"}
+                    </button>
+
+                    {/* Dashboard Canvas Enable/Disable */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        toggleWidget(widget.id);
+                        addNotification(
+                          widget.isActive ? "Widget Deactivated" : "Widget Activated",
+                          `${widget.name} canvas state updated.`,
+                          widget.isActive ? "info" : "success"
+                        );
+                      }}
+                      className="xe-transition"
+                      style={{
+                        fontFamily: "var(--xe-font-mono)",
+                        fontSize: 10,
+                        letterSpacing: "0.04em",
+                        textTransform: "uppercase" as const,
+                        color: widget.isActive ? "var(--xe-muted)" : "var(--xe-faint)",
+                        background: "transparent",
+                        border: "1px solid var(--xe-border)",
+                        borderRadius: 3,
+                        padding: "4px 8px",
+                        cursor: "pointer",
+                      }}
+                      onMouseEnter={(e) => {
+                        (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--xe-fg)";
+                        (e.currentTarget as HTMLButtonElement).style.color = "var(--xe-fg)";
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--xe-border)";
+                        (e.currentTarget as HTMLButtonElement).style.color = widget.isActive
+                          ? "var(--xe-muted)"
+                          : "var(--xe-faint)";
+                      }}
+                    >
+                      {widget.isActive ? "DISABLE" : "ENABLE"}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

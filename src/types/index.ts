@@ -4,6 +4,17 @@ export type WidgetCategory = "All" | "Productivity" | "System" | "Media" | "Util
 
 export type WidgetSize = "small" | "medium" | "large";
 
+export interface DesktopWidgetConfig {
+  id: string;
+  enabled: boolean;
+  visible: boolean;
+  x?: number;
+  y?: number;
+  width: number;
+  height: number;
+  alwaysOnTop: boolean;
+}
+
 export interface WidgetMetadata {
   id: string;
   name: string;

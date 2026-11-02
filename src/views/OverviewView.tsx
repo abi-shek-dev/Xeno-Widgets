@@ -1,4 +1,4 @@
-import { ArrowRight, Plus } from "lucide-react";
+import { ArrowRight, Plus, ExternalLink, Focus } from "lucide-react";
 import Header from "../components/layout/Header";
 import { useWidgets } from "../context/WidgetContext";
 import ClockWidget from "../components/widgets/ClockWidget";
@@ -30,16 +30,25 @@ function renderWidgetPreview(id: string) {
 }
 
 export default function OverviewView() {
-  const { setCurrentView, activeWidgets, widgets, metrics, toggleWidget, addNotification } =
-    useWidgets();
+  const {
+    setCurrentView,
+    activeWidgets,
+    widgets,
+    toggleWidget,
+    addNotification,
+    openDesktopWidgets,
+    isWidgetOnDesktop,
+    openWidgetOnDesktop,
+    focusWidgetOnDesktop,
+  } = useWidgets();
 
-  const available = widgets.length - activeWidgets.length;
+  const available = Math.max(0, widgets.length - activeWidgets.length);
 
   const statCells = [
-    { value: String(widgets.length), label: "Total Widgets" },
-    { value: String(activeWidgets.length), label: "Active" },
-    { value: String(available), label: "Available" },
-    { value: `${metrics.cpuUsage}%`, label: "CPU Load" },
+    { value: String(widgets.length), label: "Total Installed" },
+    { value: String(activeWidgets.length), label: "Active Widgets" },
+    { value: String(openDesktopWidgets.length), label: "Open on Desktop" },
+    { value: String(available), label: "Available Widgets" },
   ];
 
   const btnPrimary: React.CSSProperties = {
@@ -261,30 +270,69 @@ export default function OverviewView() {
                   >
                     {w.name}
                   </span>
-                  {/* Category label */}
-                  <span
-                    style={{
-                      fontFamily: "var(--xe-font-mono)",
-                      fontSize: 9,
-                      color: "var(--xe-faint)",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.06em",
-                      marginRight: 12,
+                  {/* Desktop status pill */}
+                  {isWidgetOnDesktop(w.id) ? (
+                    <span
+                      style={{
+                        fontFamily: "var(--xe-font-mono)",
+                        fontSize: 9,
+                        color: "var(--xe-fg)",
+                        background: "var(--xe-border)",
+                        padding: "2px 6px",
+                        borderRadius: 2,
+                        letterSpacing: "0.06em",
+                        textTransform: "uppercase",
+                        marginRight: 10,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 3,
+                      }}
+                    >
+                      <span className="xe-status-dot active" style={{ width: 4, height: 4 }} />
+                      ON DESKTOP
+                    </span>
+                  ) : (
+                    <span
+                      style={{
+                        fontFamily: "var(--xe-font-mono)",
+                        fontSize: 9,
+                        color: "var(--xe-faint)",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.06em",
+                        marginRight: 10,
+                      }}
+                    >
+                      {w.category}
+                    </span>
+                  )}
+
+                  {/* Desktop action button */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (isWidgetOnDesktop(w.id)) {
+                        focusWidgetOnDesktop(w.id);
+                      } else {
+                        openWidgetOnDesktop(w.id);
+                      }
                     }}
-                  >
-                    {w.category}
-                  </span>
-                  {/* Running label */}
-                  <span
+                    className="xe-transition"
                     style={{
                       fontFamily: "var(--xe-font-mono)",
                       fontSize: 10,
-                      color: "var(--xe-muted)",
+                      color: isWidgetOnDesktop(w.id) ? "var(--xe-fg)" : "var(--xe-muted)",
+                      cursor: "pointer",
+                      background: "transparent",
+                      border: "none",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 4,
                       letterSpacing: "0.04em",
                     }}
                   >
-                    RUNNING
-                  </span>
+                    {isWidgetOnDesktop(w.id) ? <Focus size={10} /> : <ExternalLink size={10} />}
+                    {isWidgetOnDesktop(w.id) ? "FOCUS" : "FLOAT"}
+                  </button>
                 </div>
               ))}
             </div>

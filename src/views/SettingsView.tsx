@@ -1,4 +1,4 @@
-import { Check } from "lucide-react";
+import { Check, ShieldCheck, HardDrive, Cpu } from "lucide-react";
 import Header from "../components/layout/Header";
 import { useWidgets } from "../context/WidgetContext";
 
@@ -57,11 +57,11 @@ function SettingRow({
     <div
       className="flex items-center justify-between xe-transition"
       style={{
-        padding: "12px 16px",
+        padding: "13px 18px",
         borderBottom: "1px solid var(--xe-border)",
       }}
     >
-      <div>
+      <div style={{ paddingRight: 16 }}>
         <div
           style={{
             fontFamily: "var(--xe-font-body)",
@@ -79,6 +79,7 @@ function SettingRow({
               fontSize: 11,
               color: "var(--xe-muted)",
               marginTop: 2,
+              lineHeight: 1.45,
             }}
           >
             {description}
@@ -116,6 +117,7 @@ function SegmentControl({
         border: "1px solid var(--xe-border)",
         borderRadius: 4,
         overflow: "hidden",
+        flexShrink: 0,
       }}
     >
       {options.map((opt, i) => (
@@ -125,7 +127,7 @@ function SegmentControl({
           onClick={() => onChange(opt.value)}
           className="xe-transition"
           style={{
-            padding: "4px 12px",
+            padding: "5px 14px",
             fontSize: 11,
             fontFamily: "var(--xe-font-mono)",
             letterSpacing: "0.04em",
@@ -157,7 +159,7 @@ export default function SettingsView() {
         border: "1px solid var(--xe-border)",
         borderRadius: 4,
         overflow: "hidden",
-        marginBottom: 32,
+        background: "var(--xe-surface)",
       }}
     >
       {content}
@@ -188,291 +190,438 @@ export default function SettingsView() {
         subtitle="Configure appearance, behaviour, and preferences."
       />
 
-      <div className="flex-1 overflow-y-auto" style={{ padding: "28px 40px", maxWidth: 720 }}>
-
-        {/* ── 01 APPEARANCE ─────────────────────────────── */}
-        <SectionLabel num="01" title="Appearance" />
-        {sectionCard(
-          <>
-            <div
-              style={{
-                padding: "16px",
-                borderBottom: "1px solid var(--xe-border)",
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: 8,
-              }}
-            >
-              {THEMES.map((th) => {
-                const isActive = settings.theme === th.id;
-                return (
-                  <button
-                    key={th.id}
-                    type="button"
-                    onClick={() => handleThemeChange(th.id)}
-                    className="xe-transition"
+      <div
+        className="flex-1 overflow-y-auto"
+        style={{ padding: "32px 40px" }}
+      >
+        {/* Two-Column Responsive Grid Layout filling the entire desktop workspace */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(440px, 1fr))",
+            gap: "28px",
+            alignItems: "start",
+          }}
+        >
+          {/* ── LEFT COLUMN ───────────────────────────────── */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
+            
+            {/* 01 APPEARANCE */}
+            <div>
+              <SectionLabel num="01" title="Appearance" />
+              {sectionCard(
+                <>
+                  <div
                     style={{
-                      padding: "14px",
-                      border: isActive ? "2px solid var(--xe-fg)" : "1px solid var(--xe-border)",
-                      borderRadius: 4,
-                      background: isActive ? "var(--xe-surface)" : "transparent",
-                      cursor: "pointer",
-                      textAlign: "left",
+                      padding: "16px",
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      gap: 10,
                     }}
                   >
-                    <div
-                      className="flex items-center justify-between"
-                      style={{ marginBottom: 10 }}
-                    >
-                      {/* Colour swatch */}
-                      <div
-                        style={{
-                          width: 28,
-                          height: 20,
-                          borderRadius: 3,
-                          background: th.bg,
-                          border: "1px solid var(--xe-border)",
-                          position: "relative",
-                          overflow: "hidden",
-                        }}
-                      >
-                        <div
+                    {THEMES.map((th) => {
+                      const isActive = settings.theme === th.id;
+                      return (
+                        <button
+                          key={th.id}
+                          type="button"
+                          onClick={() => handleThemeChange(th.id)}
+                          className="xe-transition"
                           style={{
-                            position: "absolute",
-                            bottom: 4,
-                            left: 4,
-                            right: 4,
-                            height: 2,
-                            background: th.fg,
-                            borderRadius: 1,
-                            opacity: 0.6,
+                            padding: "16px",
+                            border: isActive ? "2px solid var(--xe-fg)" : "1px solid var(--xe-border)",
+                            borderRadius: 4,
+                            background: isActive ? "var(--xe-bg)" : "transparent",
+                            cursor: "pointer",
+                            textAlign: "left",
                           }}
-                        />
-                      </div>
-                      {isActive && (
-                        <Check
-                          size={13}
-                          style={{ color: "var(--xe-fg)", flexShrink: 0 }}
-                        />
-                      )}
-                    </div>
-                    <div
+                        >
+                          <div
+                            className="flex items-center justify-between"
+                            style={{ marginBottom: 12 }}
+                          >
+                            {/* Colour swatch */}
+                            <div
+                              style={{
+                                width: 32,
+                                height: 22,
+                                borderRadius: 3,
+                                background: th.bg,
+                                border: "1px solid var(--xe-border)",
+                                position: "relative",
+                                overflow: "hidden",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  position: "absolute",
+                                  bottom: 4,
+                                  left: 4,
+                                  right: 4,
+                                  height: 2,
+                                  background: th.fg,
+                                  borderRadius: 1,
+                                  opacity: 0.6,
+                                }}
+                              />
+                            </div>
+                            {isActive && (
+                              <Check
+                                size={14}
+                                style={{ color: "var(--xe-fg)", flexShrink: 0 }}
+                              />
+                            )}
+                          </div>
+                          <div
+                            style={{
+                              fontFamily: "var(--xe-font-body)",
+                              fontSize: 13,
+                              fontWeight: 500,
+                              color: "var(--xe-fg)",
+                              marginBottom: 4,
+                            }}
+                          >
+                            {th.label}
+                          </div>
+                          <div
+                            style={{
+                              fontFamily: "var(--xe-font-body)",
+                              fontSize: 11,
+                              color: "var(--xe-muted)",
+                              lineHeight: 1.45,
+                            }}
+                          >
+                            {th.description}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <div
+                    style={{
+                      padding: "10px 16px",
+                      borderTop: "1px solid var(--xe-border)",
+                      background: "var(--xe-bg)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <span
                       style={{
-                        fontFamily: "var(--xe-font-body)",
-                        fontSize: 13,
-                        fontWeight: 500,
-                        color: "var(--xe-fg)",
-                        marginBottom: 3,
+                        fontFamily: "var(--xe-font-mono)",
+                        fontSize: 10,
+                        color: "var(--xe-faint)",
+                        letterSpacing: "0.04em",
                       }}
                     >
-                      {th.label}
-                    </div>
-                    <div
+                      COLOUR SYSTEM
+                    </span>
+                    <span
                       style={{
-                        fontFamily: "var(--xe-font-body)",
-                        fontSize: 11,
+                        fontFamily: "var(--xe-font-mono)",
+                        fontSize: 10,
                         color: "var(--xe-muted)",
                       }}
                     >
-                      {th.description}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </>
-        )}
-
-        {/* ── 02 TYPOGRAPHY ─────────────────────────────── */}
-        <SectionLabel num="02" title="Typography" />
-        {sectionCard(
-          <>
-            {[
-              {
-                role: "DISPLAY",
-                family: "var(--xe-font-display)",
-                sample: "Geist Pixel",
-                desc: "Headings, display text, hero sections",
-              },
-              {
-                role: "BODY",
-                family: "var(--xe-font-body)",
-                sample: "Geist Sans",
-                desc: "Navigation, descriptions, interface text",
-              },
-              {
-                role: "MONO",
-                family: "var(--xe-font-mono)",
-                sample: "Geist Mono",
-                desc: "Labels, version numbers, technical data",
-              },
-            ].map((font, i, arr) => (
-              <div
-                key={font.role}
-                style={{
-                  padding: "14px 16px",
-                  borderBottom: i < arr.length - 1 ? "1px solid var(--xe-border)" : "none",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <div>
-                  <div className="xe-section-label" style={{ marginBottom: 2 }}>
-                    {font.role}
+                      Monochromatic Editorial
+                    </span>
                   </div>
+                </>
+              )}
+            </div>
+
+            {/* 02 TYPOGRAPHY */}
+            <div>
+              <SectionLabel num="02" title="Typography" />
+              {sectionCard(
+                <>
+                  {[
+                    {
+                      role: "DISPLAY",
+                      family: "var(--xe-font-display)",
+                      sample: "Geist Pixel",
+                      desc: "Headings, display titles, hero typography",
+                    },
+                    {
+                      role: "BODY",
+                      family: "var(--xe-font-body)",
+                      sample: "Geist Sans",
+                      desc: "Navigation, descriptions, general interface",
+                    },
+                    {
+                      role: "MONO",
+                      family: "var(--xe-font-mono)",
+                      sample: "Geist Mono",
+                      desc: "Labels, version numbers, system telemetry",
+                    },
+                  ].map((font, i, arr) => (
+                    <div
+                      key={font.role}
+                      style={{
+                        padding: "16px 18px",
+                        borderBottom: i < arr.length - 1 ? "1px solid var(--xe-border)" : "none",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        gap: 16,
+                      }}
+                    >
+                      <div>
+                        <div className="xe-section-label" style={{ marginBottom: 2 }}>
+                          {font.role}
+                        </div>
+                        <div
+                          style={{
+                            fontFamily: "var(--xe-font-body)",
+                            fontSize: 11,
+                            color: "var(--xe-muted)",
+                            lineHeight: 1.4,
+                          }}
+                        >
+                          {font.desc}
+                        </div>
+                      </div>
+                      <div
+                        style={{
+                          fontFamily: font.family,
+                          fontSize: 15,
+                          color: "var(--xe-fg)",
+                          letterSpacing: font.role === "MONO" ? "0.04em" : undefined,
+                          flexShrink: 0,
+                        }}
+                      >
+                        {font.sample}
+                      </div>
+                    </div>
+                  ))}
+
                   <div
+                    style={{
+                      padding: "10px 18px",
+                      borderTop: "1px solid var(--xe-border)",
+                      background: "var(--xe-bg)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontFamily: "var(--xe-font-mono)",
+                        fontSize: 10,
+                        color: "var(--xe-faint)",
+                        letterSpacing: "0.04em",
+                      }}
+                    >
+                      ASSET STATUS
+                    </span>
+                    <span
+                      style={{
+                        fontFamily: "var(--xe-font-mono)",
+                        fontSize: 10,
+                        color: "var(--xe-muted)",
+                      }}
+                    >
+                      Bundled Locally (WOFF2)
+                    </span>
+                  </div>
+                </>
+              )}
+            </div>
+
+          </div>
+
+          {/* ── RIGHT COLUMN ──────────────────────────────── */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
+            
+            {/* 03 WIDGET BEHAVIOUR */}
+            <div>
+              <SectionLabel num="03" title="Widget Behaviour" />
+              {sectionCard(
+                <>
+                  <SettingRow
+                    label="Always on Top"
+                    description="Float desktop widgets above other foreground application windows."
+                  >
+                    <ToggleSwitch
+                      checked={settings.alwaysOnTop}
+                      onChange={(v) => updateSettings({ alwaysOnTop: v })}
+                    />
+                  </SettingRow>
+                  <SettingRow
+                    label="Launch on Startup"
+                    description="Automatically run XE Widgets when your computer starts up."
+                  >
+                    <ToggleSwitch
+                      checked={settings.startWithWindows}
+                      onChange={(v) => updateSettings({ startWithWindows: v })}
+                    />
+                  </SettingRow>
+                  <SettingRow
+                    label="Minimize to Tray"
+                    description="Keep running silently in the notification tray when closed."
+                  >
+                    <ToggleSwitch
+                      checked={settings.minimizeToTray}
+                      onChange={(v) => updateSettings({ minimizeToTray: v })}
+                    />
+                  </SettingRow>
+                  <SettingRow
+                    label="Clock Time Format"
+                    description="Choose between 12-hour AM/PM and 24-hour military notation."
+                  >
+                    <SegmentControl
+                      options={[
+                        { label: "12H", value: "12h" },
+                        { label: "24H", value: "24h" },
+                      ]}
+                      value={settings.timeFormat}
+                      onChange={(v) => updateSettings({ timeFormat: v as "12h" | "24h" })}
+                    />
+                  </SettingRow>
+                  <SettingRow
+                    label="Temperature Unit"
+                    description="Measurement unit for meteorological and atmosphere telemetry."
+                  >
+                    <SegmentControl
+                      options={[
+                        { label: "°C", value: "C" },
+                        { label: "°F", value: "F" },
+                      ]}
+                      value={settings.tempUnit}
+                      onChange={(v) => updateSettings({ tempUnit: v as "C" | "F" })}
+                    />
+                  </SettingRow>
+                </>
+              )}
+            </div>
+
+            {/* 04 APPLICATION & PLATFORM */}
+            <div>
+              <SectionLabel num="04" title="Application & Platform" />
+              {sectionCard(
+                <div style={{ padding: "18px" }}>
+                  <div
+                    className="flex items-center justify-between"
+                    style={{ marginBottom: 12 }}
+                  >
+                    <div className="flex items-center gap-2">
+                      <ShieldCheck size={16} style={{ color: "var(--xe-muted)" }} />
+                      <span
+                        style={{
+                          fontFamily: "var(--xe-font-body)",
+                          fontSize: 13,
+                          fontWeight: 500,
+                          color: "var(--xe-fg)",
+                        }}
+                      >
+                        XE Desktop Widgets Platform
+                      </span>
+                    </div>
+                    <span
+                      style={{
+                        fontFamily: "var(--xe-font-mono)",
+                        fontSize: 11,
+                        color: "var(--xe-muted)",
+                        background: "var(--xe-bg)",
+                        padding: "2px 8px",
+                        borderRadius: 3,
+                        border: "1px solid var(--xe-border)",
+                      }}
+                    >
+                      v2.0.0 Stable
+                    </span>
+                  </div>
+
+                  <p
                     style={{
                       fontFamily: "var(--xe-font-body)",
                       fontSize: 11,
                       color: "var(--xe-muted)",
+                      lineHeight: 1.6,
                     }}
                   >
-                    {font.desc}
-                  </div>
-                </div>
-                <div
-                  style={{
-                    fontFamily: font.family,
-                    fontSize: 14,
-                    color: "var(--xe-fg)",
-                    letterSpacing: font.role === "MONO" ? "0.04em" : undefined,
-                  }}
-                >
-                  {font.sample}
-                </div>
-              </div>
-            ))}
-          </>
-        )}
+                    Engineered with Tauri 2, Rust, React 19, and Vite. Styled with Tailwind CSS
+                    v4 and the Geist type family. Built with strict editorial minimalism principles,
+                    subtle dividers, and zero decorative noise.
+                  </p>
 
-        {/* ── 03 WIDGET BEHAVIOUR ───────────────────────── */}
-        <SectionLabel num="03" title="Widget Behaviour" />
-        {sectionCard(
-          <>
-            <SettingRow
-              label="Always on Top"
-              description="Float widgets above other foreground applications."
-            >
-              <ToggleSwitch
-                checked={settings.alwaysOnTop}
-                onChange={(v) => updateSettings({ alwaysOnTop: v })}
-              />
-            </SettingRow>
-            <SettingRow
-              label="Launch on Startup"
-              description="Automatically start XE Widgets when your computer turns on."
-            >
-              <ToggleSwitch
-                checked={settings.startWithWindows}
-                onChange={(v) => updateSettings({ startWithWindows: v })}
-              />
-            </SettingRow>
-            <SettingRow
-              label="Minimize to Tray"
-              description="Keep running in background when main window is closed."
-            >
-              <ToggleSwitch
-                checked={settings.minimizeToTray}
-                onChange={(v) => updateSettings({ minimizeToTray: v })}
-              />
-            </SettingRow>
-            <SettingRow label="Clock Format">
-              <SegmentControl
-                options={[
-                  { label: "12H", value: "12h" },
-                  { label: "24H", value: "24h" },
-                ]}
-                value={settings.timeFormat}
-                onChange={(v) => updateSettings({ timeFormat: v as "12h" | "24h" })}
-              />
-            </SettingRow>
-            <SettingRow label="Temperature Unit">
-              <SegmentControl
-                options={[
-                  { label: "°C", value: "C" },
-                  { label: "°F", value: "F" },
-                ]}
-                value={settings.tempUnit}
-                onChange={(v) => updateSettings({ tempUnit: v as "C" | "F" })}
-              />
-            </SettingRow>
-          </>
-        )}
-
-        {/* ── 04 APPLICATION ────────────────────────────── */}
-        <SectionLabel num="04" title="Application" />
-        {sectionCard(
-          <div style={{ padding: "16px" }}>
-            <div
-              className="flex items-center justify-between"
-              style={{ marginBottom: 10 }}
-            >
-              <span
-                style={{
-                  fontFamily: "var(--xe-font-body)",
-                  fontSize: 13,
-                  fontWeight: 500,
-                  color: "var(--xe-fg)",
-                }}
-              >
-                XE Desktop Widgets Platform
-              </span>
-              <span
-                style={{
-                  fontFamily: "var(--xe-font-mono)",
-                  fontSize: 11,
-                  color: "var(--xe-faint)",
-                }}
-              >
-                v2.0.0
-              </span>
-            </div>
-            <p
-              style={{
-                fontFamily: "var(--xe-font-body)",
-                fontSize: 11,
-                color: "var(--xe-muted)",
-                lineHeight: 1.6,
-                maxWidth: 480,
-              }}
-            >
-              Engineered with Tauri 2, Rust, React 19, and Vite. Styled with Tailwind CSS
-              v4 and the Geist type family. Designed with editorial minimalism principles.
-            </p>
-            <div
-              style={{
-                marginTop: 14,
-                paddingTop: 12,
-                borderTop: "1px solid var(--xe-border)",
-                display: "flex",
-                gap: 20,
-              }}
-            >
-              {[
-                ["Runtime", "Tauri 2"],
-                ["Backend", "Rust"],
-                ["Frontend", "React 19"],
-                ["CSS", "Tailwind v4"],
-              ].map(([k, v]) => (
-                <div key={k}>
-                  <div className="xe-section-label" style={{ marginBottom: 2 }}>
-                    {k}
-                  </div>
                   <div
                     style={{
-                      fontFamily: "var(--xe-font-mono)",
-                      fontSize: 11,
-                      color: "var(--xe-muted)",
+                      marginTop: 16,
+                      paddingTop: 14,
+                      borderTop: "1px solid var(--xe-border)",
+                      display: "grid",
+                      gridTemplateColumns: "repeat(4, 1fr)",
+                      gap: 12,
                     }}
                   >
-                    {v}
+                    {[
+                      ["Runtime", "Tauri 2"],
+                      ["Backend", "Rust"],
+                      ["Frontend", "React 19"],
+                      ["Styling", "Tailwind 4"],
+                    ].map(([k, v]) => (
+                      <div key={k}>
+                        <div className="xe-section-label" style={{ marginBottom: 3 }}>
+                          {k}
+                        </div>
+                        <div
+                          style={{
+                            fontFamily: "var(--xe-font-mono)",
+                            fontSize: 11,
+                            color: "var(--xe-fg)",
+                          }}
+                        >
+                          {v}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div
+                    style={{
+                      marginTop: 14,
+                      paddingTop: 12,
+                      borderTop: "1px solid var(--xe-border)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontFamily: "var(--xe-font-mono)",
+                        fontSize: 10,
+                        color: "var(--xe-faint)",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 4,
+                      }}
+                    >
+                      <HardDrive size={11} /> Storage: LocalStorage Sync
+                    </span>
+                    <span
+                      style={{
+                        fontFamily: "var(--xe-font-mono)",
+                        fontSize: 10,
+                        color: "var(--xe-faint)",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 4,
+                      }}
+                    >
+                      <Cpu size={11} /> Graphics: Native DirectDraw
+                    </span>
                   </div>
                 </div>
-              ))}
+              )}
             </div>
+
           </div>
-        )}
+        </div>
 
       </div>
     </div>

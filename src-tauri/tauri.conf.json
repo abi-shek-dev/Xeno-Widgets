@@ -12,6 +12,7 @@
   "app": {
     "windows": [
       {
+        "label": "main",
         "title": "XE Widgets - Desktop Suite",
         "width": 1120,
         "height": 760,
