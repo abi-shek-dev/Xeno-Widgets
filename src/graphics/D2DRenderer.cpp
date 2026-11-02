@@ -63,16 +63,27 @@ namespace xe {
         m_initialized = false;
     }
 
+    void D2DRenderer::SetActiveWindow(HWND hwnd) {
+        m_activeHwnd = hwnd;
+    }
+
     bool D2DRenderer::CreateDeviceResources(HWND hwnd) {
-        m_hwnd = hwnd;
-        if (!m_d2dFactory) return false;
-        if (m_renderTarget) return true;
+        if (!hwnd || !m_d2dFactory) return false;
+        m_activeHwnd = hwnd;
+
+        auto it = m_targets.find(hwnd);
+        if (it != m_targets.end() && it->second.renderTarget) {
+            return true;
+        }
 
         RECT rc{};
         GetClientRect(hwnd, &rc);
-        D2D1_SIZE_U size = D2D1::SizeU(rc.right - rc.left, rc.bottom - rc.top);
+        D2D1_SIZE_U size = D2D1::SizeU(
+            std::max<UINT>(1, static_cast<UINT>(rc.right - rc.left)),
+            std::max<UINT>(1, static_cast<UINT>(rc.bottom - rc.top))
+        );
 
-        // Alpha mode premultiplied enables transparent desktop widgets in subsequent phases
+        // Alpha mode premultiplied enables transparent desktop widgets
         D2D1_RENDER_TARGET_PROPERTIES rtProps = D2D1::RenderTargetProperties(
             D2D1_RENDER_TARGET_TYPE_DEFAULT,
             D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED)
@@ -84,129 +95,186 @@ namespace xe {
             D2D1_PRESENT_OPTIONS_IMMEDIATELY
         );
 
+        ComPtr<ID2D1HwndRenderTarget> renderTarget;
         HRESULT hr = m_d2dFactory->CreateHwndRenderTarget(
             rtProps,
             hwndProps,
-            m_renderTarget.GetAddressOf()
+            renderTarget.GetAddressOf()
         );
 
         if (FAILED(hr)) {
-            // Fallback to IGNORE alpha mode if PREMULTIPLIED is unsupported on specific HWND
+            // Fallback to IGNORE alpha mode if PREMULTIPLIED is unsupported
             rtProps.pixelFormat.alphaMode = D2D1_ALPHA_MODE_IGNORE;
             hr = m_d2dFactory->CreateHwndRenderTarget(
                 rtProps,
                 hwndProps,
-                m_renderTarget.GetAddressOf()
+                renderTarget.GetAddressOf()
             );
         }
 
         if (FAILED(hr)) {
-            XE_LOG_ERROR("Failed to create Direct2D HwndRenderTarget");
+            XE_LOG_ERROR("Failed to create Direct2D HwndRenderTarget for HWND");
             return false;
         }
 
+        TargetResources res{};
+        res.hwnd = hwnd;
+        res.renderTarget = renderTarget;
         UINT dpi = GetDpiForWindow(hwnd);
-        UpdateDpi(dpi);
+        res.dpiScale = static_cast<float>(dpi) / 96.0f;
+        res.renderTarget->SetDpi(static_cast<float>(dpi), static_cast<float>(dpi));
 
-        XE_LOG_INFO("Direct2D HwndRenderTarget created successfully");
+        m_targets[hwnd] = std::move(res);
+        XE_LOG_INFO("Direct2D HwndRenderTarget created successfully for HWND");
         return true;
     }
 
-    void D2DRenderer::DiscardDeviceResources() {
-        m_brushCache.clear();
-        m_renderTarget.Reset();
+    void D2DRenderer::DiscardDeviceResources(HWND hwnd) {
+        if (hwnd) {
+            m_targets.erase(hwnd);
+            if (m_activeHwnd == hwnd) {
+                m_activeHwnd = nullptr;
+            }
+        } else {
+            m_targets.clear();
+            m_activeHwnd = nullptr;
+        }
+    }
+
+    ID2D1HwndRenderTarget* D2DRenderer::GetRenderTarget() const {
+        if (!m_activeHwnd) return nullptr;
+        auto it = m_targets.find(m_activeHwnd);
+        if (it != m_targets.end()) {
+            return it->second.renderTarget.Get();
+        }
+        return nullptr;
+    }
+
+    float D2DRenderer::GetDpiScale() const {
+        if (!m_activeHwnd) return 1.0f;
+        auto it = m_targets.find(m_activeHwnd);
+        if (it != m_targets.end()) {
+            return it->second.dpiScale;
+        }
+        return 1.0f;
     }
 
     void D2DRenderer::Resize(UINT width, UINT height) {
-        if (m_renderTarget) {
-            D2D1_SIZE_U size = D2D1::SizeU(width, height);
-            m_renderTarget->Resize(size);
+        if (m_activeHwnd) {
+            Resize(m_activeHwnd, width, height);
         }
     }
 
-    void D2DRenderer::UpdateDpi(UINT dpi) {
-        m_dpiScale = static_cast<float>(dpi) / 96.0f;
-        if (m_renderTarget) {
-            m_renderTarget->SetDpi(static_cast<float>(dpi), static_cast<float>(dpi));
+    void D2DRenderer::Resize(HWND hwnd, UINT width, UINT height) {
+        auto it = m_targets.find(hwnd);
+        if (it != m_targets.end() && it->second.renderTarget) {
+            D2D1_SIZE_U size = D2D1::SizeU(std::max<UINT>(1, width), std::max<UINT>(1, height));
+            it->second.renderTarget->Resize(size);
         }
     }
 
-    void D2DRenderer::BeginDraw() {
-        if (m_renderTarget) {
-            m_renderTarget->BeginDraw();
+    void D2DRenderer::UpdateDpi(UINT dpi, HWND hwnd) {
+        HWND targetHwnd = hwnd ? hwnd : m_activeHwnd;
+        if (!targetHwnd) return;
+        auto it = m_targets.find(targetHwnd);
+        if (it != m_targets.end()) {
+            it->second.dpiScale = static_cast<float>(dpi) / 96.0f;
+            if (it->second.renderTarget) {
+                it->second.renderTarget->SetDpi(static_cast<float>(dpi), static_cast<float>(dpi));
+            }
+        }
+    }
+
+    void D2DRenderer::BeginDraw(HWND hwnd) {
+        if (hwnd) {
+            m_activeHwnd = hwnd;
+        }
+        auto target = GetRenderTarget();
+        if (target) {
+            target->BeginDraw();
         }
     }
 
     HRESULT D2DRenderer::EndDraw() {
-        if (!m_renderTarget) return S_OK;
+        auto target = GetRenderTarget();
+        if (!target) return S_OK;
 
-        HRESULT hr = m_renderTarget->EndDraw();
+        HRESULT hr = target->EndDraw();
         if (hr == D2DERR_RECREATE_TARGET) {
             XE_LOG_WARN("Direct2D device lost. Discarding device resources...");
-            DiscardDeviceResources();
-            if (m_hwnd) {
-                CreateDeviceResources(m_hwnd);
+            HWND lostHwnd = m_activeHwnd;
+            DiscardDeviceResources(lostHwnd);
+            if (lostHwnd) {
+                CreateDeviceResources(lostHwnd);
             }
         }
         return hr;
     }
 
     ComPtr<ID2D1SolidColorBrush> D2DRenderer::GetOrCreateBrush(const D2D1_COLOR_F& color) {
-        if (!m_renderTarget) return nullptr;
+        if (!m_activeHwnd) return nullptr;
+        auto it = m_targets.find(m_activeHwnd);
+        if (it == m_targets.end() || !it->second.renderTarget) return nullptr;
 
         uint32_t key = PackColor(color);
-        auto it = m_brushCache.find(key);
-        if (it != m_brushCache.end()) {
-            return it->second;
+        auto brushIt = it->second.brushCache.find(key);
+        if (brushIt != it->second.brushCache.end()) {
+            return brushIt->second;
         }
 
         ComPtr<ID2D1SolidColorBrush> brush;
-        HRESULT hr = m_renderTarget->CreateSolidColorBrush(color, brush.GetAddressOf());
+        HRESULT hr = it->second.renderTarget->CreateSolidColorBrush(color, brush.GetAddressOf());
         if (SUCCEEDED(hr)) {
-            m_brushCache[key] = brush;
+            it->second.brushCache[key] = brush;
             return brush;
         }
         return nullptr;
     }
 
     void D2DRenderer::Clear(const D2D1_COLOR_F& color) {
-        if (m_renderTarget) {
-            m_renderTarget->Clear(color);
+        auto target = GetRenderTarget();
+        if (target) {
+            target->Clear(color);
         }
     }
 
     void D2DRenderer::DrawLine(D2D1_POINT_2F p0, D2D1_POINT_2F p1, const D2D1_COLOR_F& color, float strokeWidth) {
+        auto target = GetRenderTarget();
         auto brush = GetOrCreateBrush(color);
-        if (m_renderTarget && brush) {
-            m_renderTarget->DrawLine(p0, p1, brush.Get(), strokeWidth);
+        if (target && brush) {
+            target->DrawLine(p0, p1, brush.Get(), strokeWidth);
         }
     }
 
     void D2DRenderer::DrawRectangle(const D2D1_RECT_F& rect, const D2D1_COLOR_F& color, float strokeWidth) {
+        auto target = GetRenderTarget();
         auto brush = GetOrCreateBrush(color);
-        if (m_renderTarget && brush) {
-            m_renderTarget->DrawRectangle(rect, brush.Get(), strokeWidth);
+        if (target && brush) {
+            target->DrawRectangle(rect, brush.Get(), strokeWidth);
         }
     }
 
     void D2DRenderer::FillRectangle(const D2D1_RECT_F& rect, const D2D1_COLOR_F& color) {
+        auto target = GetRenderTarget();
         auto brush = GetOrCreateBrush(color);
-        if (m_renderTarget && brush) {
-            m_renderTarget->FillRectangle(rect, brush.Get());
+        if (target && brush) {
+            target->FillRectangle(rect, brush.Get());
         }
     }
 
     void D2DRenderer::DrawRoundedRectangle(const D2D1_ROUNDED_RECT& roundedRect, const D2D1_COLOR_F& color, float strokeWidth) {
+        auto target = GetRenderTarget();
         auto brush = GetOrCreateBrush(color);
-        if (m_renderTarget && brush) {
-            m_renderTarget->DrawRoundedRectangle(roundedRect, brush.Get(), strokeWidth);
+        if (target && brush) {
+            target->DrawRoundedRectangle(roundedRect, brush.Get(), strokeWidth);
         }
     }
 
     void D2DRenderer::FillRoundedRectangle(const D2D1_ROUNDED_RECT& roundedRect, const D2D1_COLOR_F& color) {
+        auto target = GetRenderTarget();
         auto brush = GetOrCreateBrush(color);
-        if (m_renderTarget && brush) {
-            m_renderTarget->FillRoundedRectangle(roundedRect, brush.Get());
+        if (target && brush) {
+            target->FillRoundedRectangle(roundedRect, brush.Get());
         }
     }
 
@@ -216,9 +284,10 @@ namespace xe {
         const D2D1_COLOR_F& color,
         IDWriteTextFormat* textFormat
     ) {
+        auto target = GetRenderTarget();
         auto brush = GetOrCreateBrush(color);
-        if (m_renderTarget && brush && textFormat) {
-            m_renderTarget->DrawText(
+        if (target && brush && textFormat) {
+            target->DrawText(
                 text.c_str(),
                 static_cast<UINT32>(text.length()),
                 textFormat,

@@ -1,5 +1,8 @@
 #include "Engine.hpp"
 #include "Logger.hpp"
+#include "../windows/WindowManager.hpp"
+#include "../widgets/ClockWidget.hpp"
+#include "../widgets/MusicWidget.hpp"
 
 namespace xe {
 
@@ -51,6 +54,39 @@ namespace xe {
 
         m_mainWindow->Show(SW_SHOWNORMAL);
         XE_LOG_INFO("XE Native Engine initialized successfully");
+
+        // Initialize WindowManager and launch desktop widgets
+        if (!WindowManager::Instance().Initialize(m_hInstance, m_renderer.get())) {
+            XE_LOG_ERROR("Failed to initialize WindowManager");
+            return false;
+        }
+
+        // 1. Precision Clock widget at (40, 100), size 320x175
+        WidgetWindow::Config clockConfig{};
+        clockConfig.title = L"XE Precision Clock";
+        clockConfig.x = 40;
+        clockConfig.y = 100;
+        clockConfig.width = 320;
+        clockConfig.height = 175;
+        clockConfig.opacity = 1.0f;
+        clockConfig.alwaysOnTop = false;
+        clockConfig.clickThrough = false;
+        clockConfig.locked = false;
+        WindowManager::Instance().CreateWidget(std::make_unique<ClockWidget>(), clockConfig);
+
+        // 2. Music Controller widget at (400, 100), size 340x200
+        WidgetWindow::Config musicConfig{};
+        musicConfig.title = L"XE Music Controller";
+        musicConfig.x = 400;
+        musicConfig.y = 100;
+        musicConfig.width = 340;
+        musicConfig.height = 200;
+        musicConfig.opacity = 1.0f;
+        musicConfig.alwaysOnTop = false;
+        musicConfig.clickThrough = false;
+        musicConfig.locked = false;
+        WindowManager::Instance().CreateWidget(std::make_unique<MusicWidget>(), musicConfig);
+
         return true;
     }
 
@@ -67,6 +103,8 @@ namespace xe {
     }
 
     void Engine::Shutdown() {
+        WindowManager::Instance().Shutdown();
+
         if (m_mainWindow) {
             m_mainWindow->Close();
             m_mainWindow.reset();

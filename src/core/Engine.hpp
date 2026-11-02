@@ -6,6 +6,8 @@
 
 namespace xe {
 
+    class WindowManager;
+
     class Engine {
     public:
         Engine();

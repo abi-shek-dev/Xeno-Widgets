@@ -32,37 +32,37 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 26,
+				"line" : 36,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 55,
+				"line" : 65,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 62,
+				"line" : 72,
 				"parent" : 0
 			},
 			{
 				"command" : 3,
 				"file" : 0,
-				"line" : 47,
+				"line" : 57,
 				"parent" : 0
 			},
 			{
 				"command" : 4,
 				"file" : 0,
-				"line" : 32,
+				"line" : 42,
 				"parent" : 0
 			},
 			{
 				"command" : 5,
 				"file" : 0,
-				"line" : 40,
+				"line" : 50,
 				"parent" : 0
 			}
 		]
@@ -145,7 +145,12 @@
 				0,
 				1,
 				2,
-				3
+				3,
+				4,
+				5,
+				6,
+				7,
+				8
 			]
 		}
 	],
@@ -283,18 +288,28 @@
 				0,
 				1,
 				2,
-				3
+				3,
+				4,
+				5,
+				6,
+				7,
+				8
 			]
 		},
 		{
 			"name" : "Header Files",
 			"sourceIndexes" : 
 			[
-				4,
-				5,
-				6,
-				7,
-				8
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15,
+				16,
+				17,
+				18
 			]
 		}
 	],
@@ -326,6 +341,36 @@
 		},
 		{
 			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/windows/WidgetWindow.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/windows/WindowManager.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/data/SystemTimeProvider.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/widgets/ClockWidget.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/widgets/MusicWidget.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
 			"path" : "include/Common.hpp",
 			"sourceGroupIndex" : 1
 		},
@@ -347,6 +392,31 @@
 		{
 			"backtrace" : 1,
 			"path" : "src/windows/Window.hpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/windows/WidgetWindow.hpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/windows/WindowManager.hpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/data/SystemTimeProvider.hpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/widgets/ClockWidget.hpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/widgets/MusicWidget.hpp",
 			"sourceGroupIndex" : 1
 		}
 	],

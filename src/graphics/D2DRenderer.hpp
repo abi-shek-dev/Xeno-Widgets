@@ -15,11 +15,14 @@ namespace xe {
         void Shutdown();
 
         bool CreateDeviceResources(HWND hwnd);
-        void DiscardDeviceResources();
+        void DiscardDeviceResources(HWND hwnd = nullptr);
+
+        void SetActiveWindow(HWND hwnd);
 
         void Resize(UINT width, UINT height);
+        void Resize(HWND hwnd, UINT width, UINT height);
 
-        void BeginDraw();
+        void BeginDraw(HWND hwnd = nullptr);
         HRESULT EndDraw();
 
         void Clear(const D2D1_COLOR_F& color);
@@ -45,25 +48,28 @@ namespace xe {
             DWRITE_PARAGRAPH_ALIGNMENT paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_NEAR
         );
 
-        ID2D1HwndRenderTarget* GetRenderTarget() const { return m_renderTarget.Get(); }
+        ID2D1HwndRenderTarget* GetRenderTarget() const;
         ID2D1Factory* GetD2DFactory() const { return m_d2dFactory.Get(); }
         IDWriteFactory* GetDWriteFactory() const { return m_dwriteFactory.Get(); }
 
-        float GetDpiScale() const { return m_dpiScale; }
-        void UpdateDpi(UINT dpi);
+        float GetDpiScale() const;
+        void UpdateDpi(UINT dpi, HWND hwnd = nullptr);
 
     private:
+        struct TargetResources {
+            HWND hwnd = nullptr;
+            ComPtr<ID2D1HwndRenderTarget> renderTarget;
+            std::unordered_map<uint32_t, ComPtr<ID2D1SolidColorBrush>> brushCache;
+            float dpiScale = 1.0f;
+        };
+
         ComPtr<ID2D1SolidColorBrush> GetOrCreateBrush(const D2D1_COLOR_F& color);
 
         ComPtr<ID2D1Factory> m_d2dFactory;
         ComPtr<IDWriteFactory> m_dwriteFactory;
-        ComPtr<ID2D1HwndRenderTarget> m_renderTarget;
 
-        // Cached brushes keyed by packed 32-bit color representation
-        std::unordered_map<uint32_t, ComPtr<ID2D1SolidColorBrush>> m_brushCache;
-
-        HWND m_hwnd = nullptr;
-        float m_dpiScale = 1.0f;
+        std::unordered_map<HWND, TargetResources> m_targets;
+        HWND m_activeHwnd = nullptr;
         bool m_initialized = false;
     };
 

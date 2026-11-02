@@ -12,6 +12,11 @@ set(SOURCES
     src/core/Engine.cpp
     src/graphics/D2DRenderer.cpp
     src/windows/Window.cpp
+    src/windows/WidgetWindow.cpp
+    src/windows/WindowManager.cpp
+    src/data/SystemTimeProvider.cpp
+    src/widgets/ClockWidget.cpp
+    src/widgets/MusicWidget.cpp
 )
 
 set(HEADERS
@@ -20,6 +25,11 @@ set(HEADERS
     src/core/Engine.hpp
     src/graphics/D2DRenderer.hpp
     src/windows/Window.hpp
+    src/windows/WidgetWindow.hpp
+    src/windows/WindowManager.hpp
+    src/data/SystemTimeProvider.hpp
+    src/widgets/ClockWidget.hpp
+    src/widgets/MusicWidget.hpp
 )
 
 # Native Windows Executable

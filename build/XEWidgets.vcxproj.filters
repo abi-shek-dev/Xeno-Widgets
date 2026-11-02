@@ -13,6 +13,21 @@
     <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\windows\Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\windows\WidgetWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\windows\WindowManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\data\SystemTimeProvider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\widgets\ClockWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\widgets\MusicWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\Xeno_Desk\xe-widgets\include\Common.hpp">
@@ -28,6 +43,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\windows\Window.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\windows\WidgetWindow.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\windows\WindowManager.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\data\SystemTimeProvider.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\widgets\ClockWidget.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\widgets\MusicWidget.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

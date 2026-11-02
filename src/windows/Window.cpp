@@ -122,6 +122,9 @@ namespace xe {
 
     void Window::Close() {
         if (m_hwnd) {
+            if (m_renderer) {
+                m_renderer->DiscardDeviceResources(m_hwnd);
+            }
             DestroyWindow(m_hwnd);
             m_hwnd = nullptr;
         }
@@ -153,6 +156,9 @@ namespace xe {
             case WM_PAINT: {
                 PAINTSTRUCT ps{};
                 BeginPaint(m_hwnd, &ps);
+                if (m_renderer) {
+                    m_renderer->SetActiveWindow(m_hwnd);
+                }
                 OnRender();
                 EndPaint(m_hwnd, &ps);
                 return 0;
@@ -162,7 +168,7 @@ namespace xe {
                 UINT width = LOWORD(lParam);
                 UINT height = HIWORD(lParam);
                 if (m_renderer) {
-                    m_renderer->Resize(width, height);
+                    m_renderer->Resize(m_hwnd, width, height);
                 }
                 InvalidateRect(m_hwnd, nullptr, FALSE);
                 return 0;
@@ -171,7 +177,7 @@ namespace xe {
             case WM_DPICHANGED: {
                 UINT dpi = HIWORD(wParam);
                 if (m_renderer) {
-                    m_renderer->UpdateDpi(dpi);
+                    m_renderer->UpdateDpi(dpi, m_hwnd);
                 }
                 auto* rect = reinterpret_cast<RECT*>(lParam);
                 SetWindowPos(
