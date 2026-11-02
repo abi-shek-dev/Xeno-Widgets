@@ -23,3 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 .vs/
+.vs/
+node_modules/
+dist/
+src-tauri/target/

@@ -1,0 +1,47 @@
+
+@import "tailwindcss";
+
+:root {
+  font-family: "Geist", "Segoe UI", sans-serif;
+  color: #f4f4f5;
+  background: #09090b;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+
+  --xe-bg: #09090b;
+  --xe-panel: #111114;
+  --xe-card: #17171c;
+  --xe-hover: #202027;
+  --xe-border: #292930;
+  --xe-accent: #9b7aff;
+  --xe-accent-soft: rgba(155, 122, 255, 0.12);
+  --xe-text: #f4f4f5;
+  --xe-muted: #92929f;
+  --xe-radius: 16px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 360px;
+  min-height: 100vh;
+  background: var(--xe-bg);
+}
+
+button {
+  font: inherit;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--xe-accent);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: rgba(155, 122, 255, 0.3);
+}
