@@ -150,6 +150,15 @@ html, body {
   overflow: hidden;
 }
 
+/* ─── DESKTOP WIDGET WINDOW (RAINMETER TRANSPARENCY) ─────── */
+
+html[data-window-type="widget"],
+html[data-window-type="widget"] body,
+html[data-window-type="widget"] #root {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
 /* ─── TYPOGRAPHY UTILITIES ───────────────────────────────── */
 
 .font-display { font-family: var(--xe-font-display); }

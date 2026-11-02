@@ -54,7 +54,32 @@ fn set_widget_always_on_top(
     widget_id: String,
     always_on_top: bool,
 ) -> Result<(), String> {
-    widget_manager::set_widget_always_on_top(&app, &widget_id, always_on_top)
+    let layer = if always_on_top { "top" } else { "normal" };
+    widget_manager::set_widget_layer(&app, &widget_id, layer)
+}
+
+#[tauri::command]
+fn set_widget_layer(app: AppHandle, widget_id: String, layer: String) -> Result<(), String> {
+    widget_manager::set_widget_layer(&app, &widget_id, &layer)
+}
+
+#[tauri::command]
+fn set_widget_locked(app: AppHandle, widget_id: String, locked: bool) -> Result<(), String> {
+    widget_manager::set_widget_locked(&app, &widget_id, locked)
+}
+
+#[tauri::command]
+fn set_widget_click_through(
+    app: AppHandle,
+    widget_id: String,
+    click_through: bool,
+) -> Result<(), String> {
+    widget_manager::set_widget_click_through(&app, &widget_id, click_through)
+}
+
+#[tauri::command]
+fn set_widget_opacity(app: AppHandle, widget_id: String, opacity: f64) -> Result<(), String> {
+    widget_manager::set_widget_opacity(&app, &widget_id, opacity)
 }
 
 #[tauri::command]
@@ -101,7 +126,6 @@ pub fn run() {
             app.manage(manager);
 
             // Restore any widgets that were active and visible before restart with a slight delay
-            // so the main window and runtime event loops are fully initialized
             let handle = app.handle().clone();
             std::thread::spawn(move || {
                 std::thread::sleep(std::time::Duration::from_millis(700));
@@ -144,6 +168,10 @@ pub fn run() {
             focus_widget_window,
             toggle_widget_window,
             set_widget_always_on_top,
+            set_widget_layer,
+            set_widget_locked,
+            set_widget_click_through,
+            set_widget_opacity,
             get_open_widget_windows,
             get_widget_configs,
             show_main_window,

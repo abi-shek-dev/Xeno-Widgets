@@ -157,6 +157,61 @@ export async function setWidgetAlwaysOnTop(widgetId: string, alwaysOnTop: boolea
   }
 }
 
+export async function setWidgetLayer(
+  widgetId: string,
+  layer: "bottom" | "normal" | "top"
+): Promise<void> {
+  if (!isTauriEnvironment()) {
+    console.info(`[DesktopWidgetService] setWidgetLayer: ${widgetId} = ${layer}`);
+    return;
+  }
+  try {
+    await invoke("set_widget_layer", { widgetId, layer });
+  } catch (error) {
+    console.error(`Failed to set layer for ${widgetId}:`, error);
+    throw error;
+  }
+}
+
+export async function setWidgetLocked(widgetId: string, locked: boolean): Promise<void> {
+  if (!isTauriEnvironment()) {
+    console.info(`[DesktopWidgetService] setWidgetLocked: ${widgetId} = ${locked}`);
+    return;
+  }
+  try {
+    await invoke("set_widget_locked", { widgetId, locked });
+  } catch (error) {
+    console.error(`Failed to set locked for ${widgetId}:`, error);
+    throw error;
+  }
+}
+
+export async function setWidgetClickThrough(widgetId: string, clickThrough: boolean): Promise<void> {
+  if (!isTauriEnvironment()) {
+    console.info(`[DesktopWidgetService] setWidgetClickThrough: ${widgetId} = ${clickThrough}`);
+    return;
+  }
+  try {
+    await invoke("set_widget_click_through", { widgetId, clickThrough });
+  } catch (error) {
+    console.error(`Failed to set click-through for ${widgetId}:`, error);
+    throw error;
+  }
+}
+
+export async function setWidgetOpacity(widgetId: string, opacity: number): Promise<void> {
+  if (!isTauriEnvironment()) {
+    console.info(`[DesktopWidgetService] setWidgetOpacity: ${widgetId} = ${opacity}`);
+    return;
+  }
+  try {
+    await invoke("set_widget_opacity", { widgetId, opacity });
+  } catch (error) {
+    console.error(`Failed to set opacity for ${widgetId}:`, error);
+    throw error;
+  }
+}
+
 export async function getOpenWidgetWindows(): Promise<string[]> {
   if (!isTauriEnvironment()) {
     return [];

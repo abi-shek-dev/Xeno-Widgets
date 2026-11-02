@@ -13,6 +13,10 @@ export interface DesktopWidgetConfig {
   width: number;
   height: number;
   alwaysOnTop: boolean;
+  layer: "bottom" | "normal" | "top";
+  locked: boolean;
+  clickThrough: boolean;
+  opacity: number;
 }
 
 export interface WidgetMetadata {

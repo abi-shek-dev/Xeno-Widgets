@@ -14,6 +14,14 @@ pub const REGISTERED_WIDGET_IDS: &[&str] = &[
     "calendar",
 ];
 
+fn default_layer() -> String {
+    "normal".to_string()
+}
+
+fn default_opacity() -> f64 {
+    1.0
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct WidgetConfig {
@@ -25,6 +33,14 @@ pub struct WidgetConfig {
     pub width: f64,
     pub height: f64,
     pub always_on_top: bool,
+    #[serde(default = "default_layer")]
+    pub layer: String, // "bottom" (desktop layer), "normal", "top" (stay on top)
+    #[serde(default)]
+    pub locked: bool, // locked position prevents dragging
+    #[serde(default)]
+    pub click_through: bool, // click through to desktop
+    #[serde(default = "default_opacity")]
+    pub opacity: f64, // 0.2 to 1.0
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -49,6 +65,10 @@ impl Default for WidgetStore {
                     width: w,
                     height: h,
                     always_on_top: false,
+                    layer: "normal".to_string(),
+                    locked: false,
+                    click_through: false,
+                    opacity: 1.0,
                 },
             );
         }
@@ -116,6 +136,10 @@ impl WidgetManager {
             width: w,
             height: h,
             always_on_top: false,
+            layer: "normal".to_string(),
+            locked: false,
+            click_through: false,
+            opacity: 1.0,
         }
     }
 
@@ -138,6 +162,10 @@ impl WidgetManager {
                         width: w,
                         height: h,
                         always_on_top: false,
+                        layer: "normal".to_string(),
+                        locked: false,
+                        click_through: false,
+                        opacity: 1.0,
                     }
                 });
             f(entry);
@@ -188,13 +216,13 @@ pub fn get_default_dimensions(id: &str) -> (f64, f64) {
 
 pub fn get_min_dimensions(id: &str) -> (f64, f64) {
     match id {
-        "clock" => (260.0, 140.0),
-        "monitor" => (300.0, 220.0),
-        "notes" => (260.0, 220.0),
-        "music" => (280.0, 200.0),
-        "weather" => (280.0, 240.0),
-        "calendar" => (320.0, 260.0),
-        _ => (240.0, 160.0),
+        "clock" => (240.0, 120.0),
+        "monitor" => (280.0, 180.0),
+        "notes" => (240.0, 180.0),
+        "music" => (260.0, 160.0),
+        "weather" => (260.0, 200.0),
+        "calendar" => (280.0, 220.0),
+        _ => (200.0, 140.0),
     }
 }
 
@@ -209,7 +237,6 @@ fn is_position_visible(app: &AppHandle, x: i32, y: i32) -> bool {
             let mw = size.width as i32;
             let mh = size.height as i32;
 
-            // Check if at least an anchor point of the window is visible
             if x >= mx - 100 && x < (mx + mw - 50) && y >= my - 50 && y < (my + mh - 50) {
                 return true;
             }
@@ -243,9 +270,22 @@ pub fn open_widget_window(app: &AppHandle, widget_id: &str) -> Result<(), String
     let width = if config.width >= min_w { config.width } else { min_w };
     let height = if config.height >= min_h { config.height } else { min_h };
 
+    let is_top = config.layer == "top" || config.always_on_top;
+    let is_bottom = config.layer == "bottom";
+
     let init_script = format!(
-        "window.__XE_WIDGET_ID__ = '{}'; window.__XE_INITIAL_ALWAYS_ON_TOP__ = {};",
-        widget_id, config.always_on_top
+        "window.__XE_WIDGET_ID__ = '{}';\
+         window.__XE_INITIAL_LAYER__ = '{}';\
+         window.__XE_INITIAL_LOCKED__ = {};\
+         window.__XE_INITIAL_CLICK_THROUGH__ = {};\
+         window.__XE_INITIAL_OPACITY__ = {};\
+         window.__XE_INITIAL_ALWAYS_ON_TOP__ = {};",
+        widget_id,
+        config.layer,
+        config.locked,
+        config.click_through,
+        config.opacity,
+        is_top
     );
 
     let mut builder = WebviewWindowBuilder::new(app, &label, WebviewUrl::default())
@@ -254,10 +294,11 @@ pub fn open_widget_window(app: &AppHandle, widget_id: &str) -> Result<(), String
         .inner_size(width, height)
         .min_inner_size(min_w, min_h)
         .resizable(true)
-        .decorations(false) // Custom editorial frameless design
-        .shadow(true)
-        .always_on_top(config.always_on_top)
-        .skip_taskbar(false);
+        .decorations(false) // Frameless Rainmeter skin
+        .transparent(true) // Transparent backing so skin floats directly on wallpaper
+        .shadow(false)
+        .always_on_top(is_top)
+        .skip_taskbar(true); // Never pollute taskbar like Rainmeter
 
     // Apply saved coordinates if they are within a currently visible monitor
     if let (Some(x), Some(y)) = (config.x, config.y) {
@@ -273,6 +314,16 @@ pub fn open_widget_window(app: &AppHandle, widget_id: &str) -> Result<(), String
     let window = builder
         .build()
         .map_err(|e| format!("Failed to create widget window {}: {}", widget_id, e))?;
+
+    // Apply bottom layer if requested
+    if is_bottom {
+        let _ = window.set_always_on_bottom(true);
+    }
+
+    // Apply click through if configured
+    if config.click_through {
+        let _ = window.set_ignore_cursor_events(true);
+    }
 
     // Mark as visible in config store
     manager.update_config(widget_id, |c| {
@@ -290,7 +341,6 @@ pub fn open_widget_window(app: &AppHandle, widget_id: &str) -> Result<(), String
 pub fn close_widget_window(app: &AppHandle, widget_id: &str) -> Result<(), String> {
     let label = window_label_for_widget(widget_id);
     if let Some(window) = app.get_webview_window(&label) {
-        // Save final position and size before closing
         if let Ok(pos) = window.outer_position() {
             if let Ok(size) = window.inner_size() {
                 let manager = app.state::<WidgetManager>();
@@ -305,7 +355,6 @@ pub fn close_widget_window(app: &AppHandle, widget_id: &str) -> Result<(), Strin
         }
         window.close().map_err(|e| format!("Error closing widget window: {}", e))?;
     } else {
-        // Even if window wasn't open, ensure config is marked not visible
         let manager = app.state::<WidgetManager>();
         manager.update_config(widget_id, |c| {
             c.visible = false;
@@ -340,24 +389,67 @@ pub fn toggle_widget_window(app: &AppHandle, widget_id: &str) -> Result<bool, St
     }
 }
 
-/// Sets always on top for a widget window
-pub fn set_widget_always_on_top(
-    app: &AppHandle,
-    widget_id: &str,
-    always_on_top: bool,
-) -> Result<(), String> {
+/// Sets layer/z-order: "bottom" (on desktop wallpaper), "normal", or "top" (stay on top)
+pub fn set_widget_layer(app: &AppHandle, widget_id: &str, layer: &str) -> Result<(), String> {
     let label = window_label_for_widget(widget_id);
     if let Some(window) = app.get_webview_window(&label) {
-        window
-            .set_always_on_top(always_on_top)
-            .map_err(|e| format!("Failed to set always on top: {}", e))?;
+        match layer {
+            "bottom" => {
+                let _ = window.set_always_on_top(false);
+                let _ = window.set_always_on_bottom(true);
+            }
+            "top" => {
+                let _ = window.set_always_on_bottom(false);
+                let _ = window.set_always_on_top(true);
+            }
+            _ => {
+                let _ = window.set_always_on_top(false);
+                let _ = window.set_always_on_bottom(false);
+            }
+        }
     }
 
     let manager = app.state::<WidgetManager>();
     manager.update_config(widget_id, |c| {
-        c.always_on_top = always_on_top;
+        c.layer = layer.to_string();
+        c.always_on_top = layer == "top";
     });
 
+    Ok(())
+}
+
+/// Toggles locked position (disables or enables window movement)
+pub fn set_widget_locked(app: &AppHandle, widget_id: &str, locked: bool) -> Result<(), String> {
+    let manager = app.state::<WidgetManager>();
+    manager.update_config(widget_id, |c| {
+        c.locked = locked;
+    });
+    Ok(())
+}
+
+/// Sets click-through mode (transparent to mouse clicks)
+pub fn set_widget_click_through(app: &AppHandle, widget_id: &str, click_through: bool) -> Result<(), String> {
+    let label = window_label_for_widget(widget_id);
+    if let Some(window) = app.get_webview_window(&label) {
+        window
+            .set_ignore_cursor_events(click_through)
+            .map_err(|e| format!("Failed to set click-through: {}", e))?;
+    }
+
+    let manager = app.state::<WidgetManager>();
+    manager.update_config(widget_id, |c| {
+        c.click_through = click_through;
+    });
+
+    Ok(())
+}
+
+/// Sets opacity (0.2 to 1.0)
+pub fn set_widget_opacity(app: &AppHandle, widget_id: &str, opacity: f64) -> Result<(), String> {
+    let manager = app.state::<WidgetManager>();
+    manager.update_config(widget_id, |c| {
+        c.opacity = opacity.clamp(0.2, 1.0);
+    });
     Ok(())
 }
 

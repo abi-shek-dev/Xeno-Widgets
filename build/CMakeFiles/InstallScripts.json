@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"C:/Xeno_Desk/xe-widgets/build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

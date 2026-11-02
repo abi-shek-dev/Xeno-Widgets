@@ -1,0 +1,10 @@
+^C:\XENO_DESK\XE-WIDGETS\BUILD\CMAKEFILES\9F5FB572A0F3C98799AF138300DB5EC5\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Xeno_Desk/xe-widgets -BC:/Xeno_Desk/xe-widgets/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Xeno_Desk/xe-widgets/build/XEWidgets.slnx
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

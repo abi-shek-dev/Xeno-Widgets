@@ -1,0 +1,3 @@
+C:/Xeno_Desk/xe-widgets/build/CMakeFiles/XEWidgets.dir
+C:/Xeno_Desk/xe-widgets/build/CMakeFiles/ALL_BUILD.dir
+C:/Xeno_Desk/xe-widgets/build/CMakeFiles/ZERO_CHECK.dir
