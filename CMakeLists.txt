@@ -10,26 +10,42 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(SOURCES
     src/main.cpp
     src/core/Engine.cpp
+    src/core/WidgetConfig.cpp
     src/graphics/D2DRenderer.cpp
     src/windows/Window.cpp
     src/windows/WidgetWindow.cpp
     src/windows/WindowManager.cpp
     src/data/SystemTimeProvider.cpp
+    src/data/SMTCProvider.cpp
+    src/data/TelemetryProvider.cpp
+    src/manager/TrayManager.cpp
     src/widgets/ClockWidget.cpp
     src/widgets/MusicWidget.cpp
+    src/widgets/SystemMonitorWidget.cpp
+    src/widgets/WeatherWidget.cpp
+    src/widgets/NotesWidget.cpp
+    src/widgets/CalendarWidget.cpp
 )
 
 set(HEADERS
     include/Common.hpp
     src/core/Logger.hpp
     src/core/Engine.hpp
+    src/core/WidgetConfig.hpp
     src/graphics/D2DRenderer.hpp
     src/windows/Window.hpp
     src/windows/WidgetWindow.hpp
     src/windows/WindowManager.hpp
     src/data/SystemTimeProvider.hpp
+    src/data/SMTCProvider.hpp
+    src/data/TelemetryProvider.hpp
+    src/manager/TrayManager.hpp
     src/widgets/ClockWidget.hpp
     src/widgets/MusicWidget.hpp
+    src/widgets/SystemMonitorWidget.hpp
+    src/widgets/WeatherWidget.hpp
+    src/widgets/NotesWidget.hpp
+    src/widgets/CalendarWidget.hpp
 )
 
 # Native Windows Executable
@@ -79,7 +95,39 @@ target_link_libraries(XEWidgets PRIVATE
     gdi32
     ole32
     shell32
+    iphlpapi
 )
+
+# Windows Runtime / C++/WinRT Support for SMTC Integration
+set(WINRT_FOUND FALSE)
+file(GLOB WINSDK_CPPWINRT_DIRS "C:/Program Files (x86)/Windows Kits/10/Include/10.*/cppwinrt")
+if(WINSDK_CPPWINRT_DIRS)
+    list(GET WINSDK_CPPWINRT_DIRS -1 DETECTED_CPPWINRT_DIR)
+    if(EXISTS "${DETECTED_CPPWINRT_DIR}/winrt/base.h")
+        set(WINRT_FOUND TRUE)
+        set(CPPWINRT_INCLUDE_PATH "${DETECTED_CPPWINRT_DIR}")
+    endif()
+endif()
+
+if(NOT WINRT_FOUND AND DEFINED ENV{WindowsSdkDir})
+    set(ENV_SDK_DIR "$ENV{WindowsSdkDir}")
+    set(ENV_SDK_VER "$ENV{WindowsSDKVersion}")
+    string(REGEX REPLACE "[\\/]+$" "" ENV_SDK_DIR "${ENV_SDK_DIR}")
+    string(REGEX REPLACE "[\\/]+$" "" ENV_SDK_VER "${ENV_SDK_VER}")
+    if(EXISTS "${ENV_SDK_DIR}/Include/${ENV_SDK_VER}/cppwinrt/winrt/base.h")
+        set(WINRT_FOUND TRUE)
+        set(CPPWINRT_INCLUDE_PATH "${ENV_SDK_DIR}/Include/${ENV_SDK_VER}/cppwinrt")
+    endif()
+endif()
+
+if(WINRT_FOUND)
+    message(STATUS "C++/WinRT headers located at: ${CPPWINRT_INCLUDE_PATH}")
+    target_compile_definitions(XEWidgets PRIVATE XE_SMTC_ENABLED)
+    target_include_directories(XEWidgets SYSTEM PRIVATE "${CPPWINRT_INCLUDE_PATH}")
+    target_link_libraries(XEWidgets PRIVATE windowsapp)
+else()
+    message(STATUS "C++/WinRT headers not found; SMTCProvider using fallback demo mode")
+endif()
 
 # Output directory
 set_target_properties(XEWidgets PROPERTIES

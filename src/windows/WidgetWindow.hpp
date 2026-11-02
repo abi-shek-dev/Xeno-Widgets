@@ -8,6 +8,7 @@ namespace xe {
     class WidgetWindow {
     public:
         struct Config {
+            std::wstring id = L"unknown";
             std::wstring title = L"Widget";
             int x = CW_USEDEFAULT;
             int y = CW_USEDEFAULT;
@@ -17,6 +18,7 @@ namespace xe {
             bool alwaysOnTop = false;
             bool clickThrough = false;
             bool locked = false;
+            bool visible = true;
         };
 
         WidgetWindow();
@@ -24,9 +26,14 @@ namespace xe {
 
         bool Create(const Config& config, D2DRenderer* renderer);
         void Show();
+        void Hide();
         void Close();
         void Destroy();
         HWND GetHwnd() const { return m_hwnd; }
+        bool IsOpen() const { return m_hwnd != nullptr && IsWindow(m_hwnd); }
+        const Config& GetConfig() const { return m_config; }
+        Config& GetConfig() { return m_config; }
+        const std::wstring& GetId() const { return m_config.id; }
 
         void SetAlwaysOnTop(bool value);
         void SetOpacity(float opacity);   // 0.0 to 1.0 using SetLayeredWindowAttributes

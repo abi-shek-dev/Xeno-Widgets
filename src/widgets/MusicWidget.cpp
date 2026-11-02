@@ -1,19 +1,17 @@
 #include "MusicWidget.hpp"
 #include <algorithm>
-#include <cstdio>
+#include <cwchar>
 
 namespace xe {
 
-    static std::wstring FormatTrackTime(float totalSeconds) {
-        int total = std::max(0, static_cast<int>(totalSeconds));
-        int m = total / 60;
-        int s = total % 60;
-        wchar_t buf[16]{};
-        swprintf_s(buf, L"%d:%02d", m, s);
-        return buf;
+    MusicWidget::MusicWidget() {
+        // Fallback demo track matching the screenshot
+        m_track.title = L"Neon Horizon (Synthwave Mix)";
+        m_track.artist = L"Kavinsky & The Midnight";
+        m_track.progressSec = 48.0f;
+        m_track.durationSec = 218.0f; // 3:38
+        m_track.isPlaying = false;
     }
-
-    MusicWidget::MusicWidget() = default;
 
     MusicWidget::~MusicWidget() {
         if (m_hwnd) {
@@ -24,74 +22,34 @@ namespace xe {
     void MusicWidget::InitTypography() {
         if (m_typographyInitialized || !m_renderer) return;
 
-        // 9pt ≈ 12.0f DIPs
         m_formatHeader = m_renderer->CreateTextFormat(
-            L"Geist Mono",
-            12.0f,
-            DWRITE_FONT_WEIGHT_NORMAL,
-            DWRITE_FONT_STYLE_NORMAL,
-            DWRITE_TEXT_ALIGNMENT_LEADING,
-            DWRITE_PARAGRAPH_ALIGNMENT_CENTER
+            L"Geist Mono", 11.0f, DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL,
+            DWRITE_TEXT_ALIGNMENT_LEADING, DWRITE_PARAGRAPH_ALIGNMENT_CENTER
         );
 
-        // Badge: 8.5pt ≈ 11.0f DIPs
-        m_formatBadge = m_renderer->CreateTextFormat(
-            L"Geist Mono",
-            11.0f,
-            DWRITE_FONT_WEIGHT_MEDIUM,
-            DWRITE_FONT_STYLE_NORMAL,
-            DWRITE_TEXT_ALIGNMENT_CENTER,
-            DWRITE_PARAGRAPH_ALIGNMENT_CENTER
-        );
-
-        // Title: Geist Sans 14pt ≈ 18.0f DIPs Bold
         m_formatTitle = m_renderer->CreateTextFormat(
-            L"Geist Sans",
-            17.0f,
-            DWRITE_FONT_WEIGHT_SEMI_BOLD,
-            DWRITE_FONT_STYLE_NORMAL,
-            DWRITE_TEXT_ALIGNMENT_LEADING,
-            DWRITE_PARAGRAPH_ALIGNMENT_NEAR
+            L"Geist Sans", 12.5f, DWRITE_FONT_WEIGHT_SEMI_BOLD, DWRITE_FONT_STYLE_NORMAL,
+            DWRITE_TEXT_ALIGNMENT_LEADING, DWRITE_PARAGRAPH_ALIGNMENT_CENTER
         );
 
-        // Artist: Geist Sans 11pt ≈ 14.5f DIPs
         m_formatArtist = m_renderer->CreateTextFormat(
-            L"Geist Sans",
-            14.0f,
-            DWRITE_FONT_WEIGHT_NORMAL,
-            DWRITE_FONT_STYLE_NORMAL,
-            DWRITE_TEXT_ALIGNMENT_LEADING,
-            DWRITE_PARAGRAPH_ALIGNMENT_NEAR
+            L"Geist Sans", 11.0f, DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL,
+            DWRITE_TEXT_ALIGNMENT_LEADING, DWRITE_PARAGRAPH_ALIGNMENT_CENTER
         );
 
-        // Time labels: Geist Mono 9pt ≈ 12.0f DIPs
         m_formatTime = m_renderer->CreateTextFormat(
-            L"Geist Mono",
-            11.5f,
-            DWRITE_FONT_WEIGHT_NORMAL,
-            DWRITE_FONT_STYLE_NORMAL,
-            DWRITE_TEXT_ALIGNMENT_LEADING,
-            DWRITE_PARAGRAPH_ALIGNMENT_CENTER
+            L"Geist Mono", 9.0f, DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL,
+            DWRITE_TEXT_ALIGNMENT_LEADING, DWRITE_PARAGRAPH_ALIGNMENT_CENTER
         );
 
-        // Buttons: Geist Mono 10pt ≈ 13.0f DIPs Center
         m_formatBtn = m_renderer->CreateTextFormat(
-            L"Geist Mono",
-            13.0f,
-            DWRITE_FONT_WEIGHT_MEDIUM,
-            DWRITE_FONT_STYLE_NORMAL,
-            DWRITE_TEXT_ALIGNMENT_CENTER,
-            DWRITE_PARAGRAPH_ALIGNMENT_CENTER
+            L"Geist Mono", 10.0f, DWRITE_FONT_WEIGHT_MEDIUM, DWRITE_FONT_STYLE_NORMAL,
+            DWRITE_TEXT_ALIGNMENT_CENTER, DWRITE_PARAGRAPH_ALIGNMENT_CENTER
         );
 
-        // Footer: Geist Mono 9pt ≈ 12.0f DIPs
         m_formatFooter = m_renderer->CreateTextFormat(
-            L"Geist Mono",
-            11.5f,
-            DWRITE_FONT_WEIGHT_NORMAL,
-            DWRITE_FONT_STYLE_NORMAL,
-            DWRITE_TEXT_ALIGNMENT_LEADING,
-            DWRITE_PARAGRAPH_ALIGNMENT_CENTER
+            L"Geist Mono", 9.0f, DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL,
+            DWRITE_TEXT_ALIGNMENT_LEADING, DWRITE_PARAGRAPH_ALIGNMENT_CENTER
         );
 
         m_typographyInitialized = true;
@@ -99,47 +57,28 @@ namespace xe {
 
     void MusicWidget::OnTick(UINT_PTR timerId) {
         if (timerId == m_timerId) {
-            if (m_track.isPlaying) {
-                m_track.progressSec += 1.0f;
-                if (m_track.progressSec > m_track.durationSec) {
-                    m_track.progressSec = 0.0f;
+            // Check Windows SMTC live media
+            MediaInfo liveInfo = SMTCProvider::Instance().GetCurrentMedia();
+            if (liveInfo.hasMedia) {
+                m_usingSMTC = true;
+                if (!liveInfo.title.empty()) m_track.title = liveInfo.title;
+                if (!liveInfo.artist.empty()) m_track.artist = liveInfo.artist;
+                m_track.isPlaying = liveInfo.isPlaying;
+                m_track.progressSec = static_cast<float>(liveInfo.progressSeconds);
+                m_track.durationSec = static_cast<float>(liveInfo.durationSeconds);
+            } else {
+                m_usingSMTC = false;
+                if (m_track.isPlaying) {
+                    m_track.progressSec += 1.0f;
+                    if (m_track.progressSec > m_track.durationSec) {
+                        m_track.progressSec = 0.0f;
+                    }
                 }
-                if (m_hwnd) {
-                    InvalidateRect(m_hwnd, nullptr, FALSE);
-                }
             }
-        }
-    }
 
-    bool MusicWidget::IsInInteractiveArea(int clientX, int clientY) const {
-        POINT pt{ clientX, clientY };
-        return PtInRect(&m_btnPrev, pt) || PtInRect(&m_btnPlay, pt) || PtInRect(&m_btnNext, pt);
-    }
-
-    void MusicWidget::OnLButtonDown(int x, int y) {
-        POINT pt{ x, y };
-        if (PtInRect(&m_btnPlay, pt)) {
-            m_track.isPlaying = !m_track.isPlaying;
             if (m_hwnd) {
                 InvalidateRect(m_hwnd, nullptr, FALSE);
             }
-            return;
-        }
-
-        if (PtInRect(&m_btnPrev, pt)) {
-            m_track.progressSec = 0.0f;
-            if (m_hwnd) {
-                InvalidateRect(m_hwnd, nullptr, FALSE);
-            }
-            return;
-        }
-
-        if (PtInRect(&m_btnNext, pt)) {
-            m_track.progressSec = 0.0f;
-            if (m_hwnd) {
-                InvalidateRect(m_hwnd, nullptr, FALSE);
-            }
-            return;
         }
     }
 
@@ -152,6 +91,26 @@ namespace xe {
         return WidgetWindow::HandleWidgetMessage(msg, wParam, lParam);
     }
 
+    bool MusicWidget::IsInInteractiveArea(int clientX, int clientY) const {
+        POINT pt{ clientX, clientY };
+        return PtInRect(&m_btnPrev, pt) || PtInRect(&m_btnPlay, pt) || PtInRect(&m_btnNext, pt);
+    }
+
+    void MusicWidget::OnLButtonDown(int x, int y) {
+        POINT pt{ x, y };
+
+        if (PtInRect(&m_btnPlay, pt)) {
+            m_track.isPlaying = !m_track.isPlaying;
+            if (m_hwnd) InvalidateRect(m_hwnd, nullptr, FALSE);
+        } else if (PtInRect(&m_btnPrev, pt)) {
+            m_track.progressSec = 0.0f;
+            if (m_hwnd) InvalidateRect(m_hwnd, nullptr, FALSE);
+        } else if (PtInRect(&m_btnNext, pt)) {
+            m_track.progressSec = 0.0f;
+            if (m_hwnd) InvalidateRect(m_hwnd, nullptr, FALSE);
+        }
+    }
+
     void MusicWidget::OnRender() {
         if (!m_renderer) return;
         InitTypography();
@@ -161,214 +120,174 @@ namespace xe {
         float width = static_cast<float>(rc.right - rc.left);
         float height = static_cast<float>(rc.bottom - rc.top);
 
-        // 1. Clear transparent background for DWM compositing
+        // 1. Clear transparent background
         m_renderer->Clear(D2D1::ColorF(0.0f, 0.0f, 0.0f, 0.0f));
 
-        // 2. Draw rounded rect card (6px margin, 6px radius)
-        float margin = 6.0f;
+        // 2. Main card (#DDDBD5 surface, #D0CEC9 border, 4px radius)
+        float margin = 4.0f;
         D2D1_ROUNDED_RECT cardRect{
             D2D1::RectF(margin, margin, width - margin, height - margin),
-            6.0f,
-            6.0f
+            4.0f, 4.0f
         };
-        m_renderer->FillRoundedRectangle(cardRect, Colors::SurfaceDark);
-        m_renderer->DrawRoundedRectangle(cardRect, Colors::BorderDark, 1.0f);
+        m_renderer->FillRoundedRectangle(cardRect, Colors::SurfaceLight);
+        m_renderer->DrawRoundedRectangle(cardRect, Colors::BorderLight, 1.0f);
 
-        // 3. Header row (32px, y=6 to y=38)
-        D2D1_RECT_F headerLabelRect = D2D1::RectF(margin + 14.0f, margin, margin + 200.0f, margin + 32.0f);
-        m_renderer->DrawText(L"AMBIENT SOUND & MEDIA", headerLabelRect, Colors::MutedDark, m_formatHeader.Get());
+        // 3. Header row (28px height)
+        float headerH = 28.0f;
+        float headerY = margin + 2.0f;
 
-        // Status Badge: "PLAYING" or "PAUSED"
-        float badgeW = 62.0f;
-        float badgeH = 18.0f;
-        float badgeX = width - margin - badgeW - 60.0f; // leave room for hover toolbar
-        float badgeY = margin + 7.0f;
-        D2D1_ROUNDED_RECT badgeRect{
-            D2D1::RectF(badgeX, badgeY, badgeX + badgeW, badgeY + badgeH),
-            3.0f,
-            3.0f
-        };
-        m_renderer->FillRoundedRectangle(badgeRect, Colors::BgDark);
-        m_renderer->DrawRoundedRectangle(badgeRect, Colors::BorderDark, 1.0f);
+        // Music note icon
+        float iconX = margin + 14.0f;
+        float iconY = headerY + 8.0f;
+        m_renderer->DrawLine(D2D1::Point2F(iconX + 3.0f, iconY + 2.0f), D2D1::Point2F(iconX + 3.0f, iconY + 11.0f), Colors::MutedLight, 1.2f);
+        m_renderer->FillEllipse(D2D1::Ellipse(D2D1::Point2F(iconX + 2.0f, iconY + 11.0f), 2.5f, 2.0f), Colors::MutedLight);
+        m_renderer->DrawLine(D2D1::Point2F(iconX + 3.0f, iconY + 2.0f), D2D1::Point2F(iconX + 9.0f, iconY + 4.0f), Colors::MutedLight, 1.5f);
+        m_renderer->DrawLine(D2D1::Point2F(iconX + 9.0f, iconY + 4.0f), D2D1::Point2F(iconX + 9.0f, iconY + 13.0f), Colors::MutedLight, 1.2f);
+        m_renderer->FillEllipse(D2D1::Ellipse(D2D1::Point2F(iconX + 8.0f, iconY + 13.0f), 2.5f, 2.0f), Colors::MutedLight);
 
-        D2D1_RECT_F badgeTextRect = D2D1::RectF(badgeX, badgeY, badgeX + badgeW, badgeY + badgeH);
-        m_renderer->DrawText(
-            m_track.isPlaying ? L"PLAYING" : L"PAUSED",
-            badgeTextRect,
-            m_track.isPlaying ? Colors::FgDark : Colors::MutedDark,
-            m_formatBadge.Get()
-        );
+        D2D1_RECT_F headerLabelR = D2D1::RectF(margin + 28.0f, headerY, width - 80.0f, headerY + headerH);
+        m_renderer->DrawText(L"MEDIA PLAYER", headerLabelR, Colors::FaintLight, m_formatHeader.Get());
 
-        // 4. Header divider line at y=38
+        // 5-bar Equalizer icon on right
+        float eqRight = width - margin - 12.0f;
+        float eqY = headerY + 16.0f;
+        float barHeights[] = { 4.0f, 8.0f, 6.0f, 10.0f, 7.0f };
+        for (int i = 0; i < 5; ++i) {
+            float bx = eqRight - (4 - i) * 3.5f;
+            float bh = barHeights[i];
+            m_renderer->DrawLine(D2D1::Point2F(bx, eqY), D2D1::Point2F(bx, eqY - bh), Colors::MutedLight, 1.5f);
+        }
+
+        // Header divider line
         m_renderer->DrawLine(
-            D2D1::Point2F(margin, margin + 32.0f),
-            D2D1::Point2F(width - margin, margin + 32.0f),
-            Colors::BorderDark,
-            1.0f
+            D2D1::Point2F(margin, margin + headerH),
+            D2D1::Point2F(width - margin, margin + headerH),
+            Colors::BorderLight, 1.0f
         );
 
-        // 5. Track Title at y=46
-        float contentMargin = 20.0f;
-        D2D1_RECT_F titleRect = D2D1::RectF(contentMargin, margin + 38.0f, width - contentMargin, margin + 60.0f);
-        m_renderer->DrawText(m_track.title, titleRect, Colors::FgDark, m_formatTitle.Get());
+        // 4. Body Content
+        float bodyTop = margin + headerH + 8.0f;
 
-        // 6. Artist at y=68
-        D2D1_RECT_F artistRect = D2D1::RectF(contentMargin, margin + 60.0f, width - contentMargin, margin + 78.0f);
-        m_renderer->DrawText(m_track.artist, artistRect, Colors::MutedDark, m_formatArtist.Get());
+        // Track title
+        D2D1_RECT_F titleR = D2D1::RectF(margin + 12.0f, bodyTop, width - margin - 12.0f, bodyTop + 18.0f);
+        m_renderer->DrawText(m_track.title, titleR, Colors::FgLight, m_formatTitle.Get());
 
-        // 7. Progress bar at y=90
-        float barY = margin + 84.0f;
-        float barW = width - (contentMargin * 2.0f);
-        float barH = 3.0f;
+        // Artist
+        D2D1_RECT_F artistR = D2D1::RectF(margin + 12.0f, bodyTop + 18.0f, width - margin - 12.0f, bodyTop + 33.0f);
+        m_renderer->DrawText(m_track.artist, artistR, Colors::MutedLight, m_formatArtist.Get());
 
-        D2D1_RECT_F bgProgressRect = D2D1::RectF(contentMargin, barY, contentMargin + barW, barY + barH);
-        m_renderer->FillRectangle(bgProgressRect, Colors::BorderDark);
+        // Album
+        D2D1_RECT_F albumR = D2D1::RectF(margin + 12.0f, bodyTop + 33.0f, width - margin - 12.0f, bodyTop + 46.0f);
+        m_renderer->DrawText(L"Endless Summer", albumR, Colors::FaintLight, m_formatFooter.Get());
 
-        float progress = std::clamp(m_track.progressSec / m_track.durationSec, 0.0f, 1.0f);
-        float fillW = progress * barW;
+        // Progress bar (height 3px, 12px margins)
+        float progY = bodyTop + 54.0f;
+        float progW = width - (margin * 2.0f) - 24.0f;
+        float progX = margin + 12.0f;
+
+        // Track background
+        D2D1_RECT_F progBgR = D2D1::RectF(progX, progY, progX + progW, progY + 3.0f);
+        m_renderer->FillRectangle(progBgR, Colors::BorderLight);
+
+        // Fill bar
+        float duration = m_track.durationSec > 0.0f ? m_track.durationSec : 218.0f;
+        float progressRatio = std::clamp(m_track.progressSec / duration, 0.0f, 1.0f);
+        float fillW = progW * progressRatio;
         if (fillW > 0.0f) {
-            D2D1_RECT_F fgProgressRect = D2D1::RectF(contentMargin, barY, contentMargin + fillW, barY + barH);
-            m_renderer->FillRectangle(fgProgressRect, Colors::FgDark);
+            D2D1_RECT_F progFgR = D2D1::RectF(progX, progY, progX + fillW, progY + 3.0f);
+            m_renderer->FillRectangle(progFgR, Colors::FgLight);
         }
 
-        // Time labels (elapsed & total)
-        std::wstring elapsedStr = FormatTrackTime(m_track.progressSec);
-        std::wstring totalStr = FormatTrackTime(m_track.durationSec);
+        // Time labels: 0:48 (left), 3:38 (right)
+        int curSec = static_cast<int>(m_track.progressSec);
+        int totSec = static_cast<int>(duration);
+        wchar_t timeElapsedBuf[32];
+        swprintf_s(timeElapsedBuf, L"%d:%02d", curSec / 60, curSec % 60);
 
-        D2D1_RECT_F elapsedRect = D2D1::RectF(contentMargin, barY + 5.0f, contentMargin + 80.0f, barY + 20.0f);
-        m_renderer->DrawText(elapsedStr, elapsedRect, Colors::MutedDark, m_formatTime.Get());
+        wchar_t timeTotalBuf[32];
+        swprintf_s(timeTotalBuf, L"%d:%02d", totSec / 60, totSec % 60);
 
-        // Format right-aligned total time
-        ComPtr<IDWriteTextFormat> formatRightTime = m_renderer->CreateTextFormat(
-            L"Geist Mono",
-            11.5f,
-            DWRITE_FONT_WEIGHT_NORMAL,
-            DWRITE_FONT_STYLE_NORMAL,
-            DWRITE_TEXT_ALIGNMENT_TRAILING,
-            DWRITE_PARAGRAPH_ALIGNMENT_CENTER
+        D2D1_RECT_F elapR = D2D1::RectF(progX, progY + 4.0f, progX + 50.0f, progY + 16.0f);
+        m_renderer->DrawText(timeElapsedBuf, elapR, Colors::FaintLight, m_formatTime.Get());
+
+        ComPtr<IDWriteTextFormat> fmtRight;
+        fmtRight = m_renderer->CreateTextFormat(
+            L"Geist Mono", 9.0f, DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL,
+            DWRITE_TEXT_ALIGNMENT_TRAILING, DWRITE_PARAGRAPH_ALIGNMENT_CENTER
         );
-        D2D1_RECT_F totalRect = D2D1::RectF(width - contentMargin - 80.0f, barY + 5.0f, width - contentMargin, barY + 20.0f);
-        m_renderer->DrawText(totalStr, totalRect, Colors::MutedDark, formatRightTime.Get());
-
-        // 8. Control buttons row at y=118
-        float btnY = margin + 112.0f;
-        float btnH = 28.0f;
-        float centerX = width / 2.0f;
-
-        // Play Button (48x28)
-        float playW = 48.0f;
-        float playX = centerX - (playW / 2.0f);
-        m_btnPlay = {
-            static_cast<LONG>(playX),
-            static_cast<LONG>(btnY),
-            static_cast<LONG>(playX + playW),
-            static_cast<LONG>(btnY + btnH)
-        };
-
-        // Prev Button (36x28)
-        float prevW = 36.0f;
-        float prevX = playX - 12.0f - prevW;
-        m_btnPrev = {
-            static_cast<LONG>(prevX),
-            static_cast<LONG>(btnY),
-            static_cast<LONG>(prevX + prevW),
-            static_cast<LONG>(btnY + btnH)
-        };
-
-        // Next Button (36x28)
-        float nextW = 36.0f;
-        float nextX = playX + playW + 12.0f;
-        m_btnNext = {
-            static_cast<LONG>(nextX),
-            static_cast<LONG>(btnY),
-            static_cast<LONG>(nextX + nextW),
-            static_cast<LONG>(btnY + btnH)
-        };
-
-        // Render Prev Button
-        D2D1_ROUNDED_RECT prevRect{
-            D2D1::RectF(prevX, btnY, prevX + prevW, btnY + btnH),
-            3.0f, 3.0f
-        };
-        m_renderer->FillRoundedRectangle(prevRect, Colors::BgDark);
-        m_renderer->DrawRoundedRectangle(prevRect, Colors::BorderDark, 1.0f);
-        m_renderer->DrawText(
-            L"\u25C0\u25C0",
-            D2D1::RectF(prevX, btnY, prevX + prevW, btnY + btnH),
-            Colors::FgDark,
-            m_formatBtn.Get()
-        );
-
-        // Render Play/Pause Button
-        D2D1_ROUNDED_RECT playRect{
-            D2D1::RectF(playX, btnY, playX + playW, btnY + btnH),
-            3.0f, 3.0f
-        };
-        if (m_track.isPlaying) {
-            m_renderer->FillRoundedRectangle(playRect, Colors::FgDark);
-            m_renderer->DrawRoundedRectangle(playRect, Colors::FgDark, 1.0f);
-            m_renderer->DrawText(
-                L"\u25AE\u25AE", // ❚❚ pause glyph
-                D2D1::RectF(playX, btnY, playX + playW, btnY + btnH),
-                Colors::BgDark,
-                m_formatBtn.Get()
-            );
-        } else {
-            m_renderer->FillRoundedRectangle(playRect, Colors::BgDark);
-            m_renderer->DrawRoundedRectangle(playRect, Colors::BorderDark, 1.0f);
-            m_renderer->DrawText(
-                L"\u25B6", // ▶ play glyph
-                D2D1::RectF(playX, btnY, playX + playW, btnY + btnH),
-                Colors::FgDark,
-                m_formatBtn.Get()
-            );
+        D2D1_RECT_F totR = D2D1::RectF(progX + progW - 50.0f, progY + 4.0f, progX + progW, progY + 16.0f);
+        if (fmtRight) {
+            m_renderer->DrawText(timeTotalBuf, totR, Colors::FaintLight, fmtRight.Get());
         }
 
-        // Render Next Button
-        D2D1_ROUNDED_RECT nextRect{
-            D2D1::RectF(nextX, btnY, nextX + nextW, btnY + btnH),
-            3.0f, 3.0f
-        };
-        m_renderer->FillRoundedRectangle(nextRect, Colors::BgDark);
-        m_renderer->DrawRoundedRectangle(nextRect, Colors::BorderDark, 1.0f);
-        m_renderer->DrawText(
-            L"\u25B6\u25B6",
-            D2D1::RectF(nextX, btnY, nextX + nextW, btnY + btnH),
-            Colors::FgDark,
-            m_formatBtn.Get()
+        // 5. Controls Row: Volume on left, Playback buttons on right
+        float ctrlY = progY + 22.0f;
+
+        // Speaker icon
+        float spkX = margin + 12.0f;
+        float spkY = ctrlY + 6.0f;
+        m_renderer->DrawLine(D2D1::Point2F(spkX, spkY - 2.0f), D2D1::Point2F(spkX + 2.0f, spkY - 2.0f), Colors::MutedLight, 1.2f);
+        m_renderer->DrawLine(D2D1::Point2F(spkX + 2.0f, spkY - 4.0f), D2D1::Point2F(spkX + 5.0f, spkY - 6.0f), Colors::MutedLight, 1.2f);
+        m_renderer->DrawLine(D2D1::Point2F(spkX + 5.0f, spkY - 6.0f), D2D1::Point2F(spkX + 5.0f, spkY + 6.0f), Colors::MutedLight, 1.2f);
+        m_renderer->DrawLine(D2D1::Point2F(spkX + 5.0f, spkY + 6.0f), D2D1::Point2F(spkX + 2.0f, spkY + 4.0f), Colors::MutedLight, 1.2f);
+        m_renderer->DrawLine(D2D1::Point2F(spkX + 2.0f, spkY + 4.0f), D2D1::Point2F(spkX, spkY + 4.0f), Colors::MutedLight, 1.2f);
+        m_renderer->DrawLine(D2D1::Point2F(spkX, spkY + 4.0f), D2D1::Point2F(spkX, spkY - 2.0f), Colors::MutedLight, 1.2f);
+
+        // Volume track bar + knob
+        float volX = spkX + 12.0f;
+        float volW = 46.0f;
+        float volBarY = spkY;
+        m_renderer->DrawLine(D2D1::Point2F(volX, volBarY), D2D1::Point2F(volX + volW, volBarY), Colors::BorderLight, 2.0f);
+        // Knob at ~70%
+        float knobX = volX + volW * 0.7f;
+        m_renderer->FillEllipse(D2D1::Ellipse(D2D1::Point2F(knobX, volBarY), 4.0f, 4.0f), Colors::FgLight);
+
+        // Transport buttons on right (Prev, Play, Next)
+        float btnAreaR = width - margin - 12.0f;
+        float btnNextX = btnAreaR - 24.0f;
+        float btnPlayX = btnNextX - 28.0f - 4.0f;
+        float btnPrevX = btnPlayX - 24.0f - 4.0f;
+        float btnY = ctrlY;
+        float btnH = 22.0f;
+
+        // Prev Button
+        m_btnPrev = { static_cast<LONG>(btnPrevX), static_cast<LONG>(btnY), static_cast<LONG>(btnPrevX + 24.0f), static_cast<LONG>(btnY + btnH) };
+        D2D1_ROUNDED_RECT prevR{ D2D1::RectF(btnPrevX, btnY, btnPrevX + 24.0f, btnY + btnH), 2.0f, 2.0f };
+        m_renderer->DrawRoundedRectangle(prevR, Colors::BorderLight, 1.0f);
+        m_renderer->DrawText(L"|\u25C0", D2D1::RectF(btnPrevX, btnY, btnPrevX + 24.0f, btnY + btnH), Colors::MutedLight, m_formatBtn.Get());
+
+        // Play Button (Solid black button with white triangle)
+        float playW = 28.0f;
+        float playH = 24.0f;
+        float playY = btnY - 1.0f;
+        m_btnPlay = { static_cast<LONG>(btnPlayX), static_cast<LONG>(playY), static_cast<LONG>(btnPlayX + playW), static_cast<LONG>(playY + playH) };
+        D2D1_ROUNDED_RECT playR{ D2D1::RectF(btnPlayX, playY, btnPlayX + playW, playY + playH), 3.0f, 3.0f };
+        m_renderer->FillRoundedRectangle(playR, Colors::FgLight);
+        // White play/pause glyph
+        m_renderer->DrawText(m_track.isPlaying ? L"\u25AE\u25AE" : L"\u25B6", D2D1::RectF(btnPlayX, playY, btnPlayX + playW, playY + playH), Colors::BgLight, m_formatBtn.Get());
+
+        // Next Button
+        m_btnNext = { static_cast<LONG>(btnNextX), static_cast<LONG>(btnY), static_cast<LONG>(btnNextX + 24.0f), static_cast<LONG>(btnY + btnH) };
+        D2D1_ROUNDED_RECT nextR{ D2D1::RectF(btnNextX, btnY, btnNextX + 24.0f, btnY + btnH), 2.0f, 2.0f };
+        m_renderer->DrawRoundedRectangle(nextR, Colors::BorderLight, 1.0f);
+        m_renderer->DrawText(L"\u25B6|", D2D1::RectF(btnNextX, btnY, btnNextX + 24.0f, btnY + btnH), Colors::MutedLight, m_formatBtn.Get());
+
+        // 6. Footer
+        float footerY = height - margin - 20.0f;
+        m_renderer->DrawLine(
+            D2D1::Point2F(margin, footerY),
+            D2D1::Point2F(width - margin, footerY),
+            Colors::BorderLight, 1.0f
         );
 
-        // 9. Volume row at y=156
-        float volY = margin + 148.0f;
-        D2D1_RECT_F volLabelRect = D2D1::RectF(contentMargin, volY, contentMargin + 32.0f, volY + 16.0f);
-        m_renderer->DrawText(L"VOL", volLabelRect, Colors::MutedDark, m_formatFooter.Get());
+        D2D1_RECT_F footL = D2D1::RectF(margin + 12.0f, footerY, width - 100.0f, height - margin);
+        m_renderer->DrawText(L"DIRECTSOUND", footL, Colors::FaintLight, m_formatFooter.Get());
 
-        float volBarX = contentMargin + 36.0f;
-        float volBarW = 60.0f;
-        float volBarY = volY + 6.0f;
-        D2D1_RECT_F volBgRect = D2D1::RectF(volBarX, volBarY, volBarX + volBarW, volBarY + 3.0f);
-        m_renderer->FillRectangle(volBgRect, Colors::BorderDark);
+        D2D1_RECT_F footR = D2D1::RectF(width - margin - 80.0f, footerY, width - margin - 12.0f, height - margin);
+        if (fmtRight) {
+            m_renderer->DrawText(L"24-BIT", footR, Colors::FaintLight, fmtRight.Get());
+        }
 
-        float volFillW = volBarW * 0.70f;
-        D2D1_RECT_F volFillRect = D2D1::RectF(volBarX, volBarY, volBarX + volFillW, volBarY + 3.0f);
-        m_renderer->FillRectangle(volFillRect, Colors::FgDark);
-
-        D2D1_RECT_F volPctRect = D2D1::RectF(volBarX + volBarW + 8.0f, volY, volBarX + volBarW + 45.0f, volY + 16.0f);
-        m_renderer->DrawText(L"70%", volPctRect, Colors::MutedDark, m_formatFooter.Get());
-
-        // Footer Section Label on right
-        ComPtr<IDWriteTextFormat> formatRightFooter = m_renderer->CreateTextFormat(
-            L"Geist Mono",
-            11.5f,
-            DWRITE_FONT_WEIGHT_NORMAL,
-            DWRITE_FONT_STYLE_NORMAL,
-            DWRITE_TEXT_ALIGNMENT_TRAILING,
-            DWRITE_PARAGRAPH_ALIGNMENT_CENTER
-        );
-        D2D1_RECT_F mediaSectionRect = D2D1::RectF(width - contentMargin - 120.0f, volY, width - contentMargin, volY + 16.0f);
-        m_renderer->DrawText(L"03 // MEDIA", mediaSectionRect, Colors::FaintDark, formatRightFooter.Get());
-
-        // 10. Floating hover toolbar
         DrawHoverToolbar(width);
     }
 

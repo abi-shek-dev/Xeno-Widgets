@@ -3,10 +3,24 @@
 #include "Common.hpp"
 #include <mutex>
 #include <iostream>
+#include <fstream>
 #include <format>
 #include <chrono>
 
 namespace xe {
+
+    inline std::string GetLogFilePath() {
+        char* appData = nullptr;
+        size_t len = 0;
+        if (_dupenv_s(&appData, &len, "APPDATA") == 0 && appData != nullptr) {
+            std::string dir = std::string(appData) + "\\XEWidgets";
+            CreateDirectoryA(dir.c_str(), nullptr);
+            std::string path = dir + "\\XEWidgets.log";
+            free(appData);
+            return path;
+        }
+        return "XEWidgets.log";
+    }
 
     enum class LogLevel {
         Debug,
@@ -45,6 +59,12 @@ namespace xe {
 
             std::cout << formatted;
             OutputDebugStringA(formatted.c_str());
+
+            static std::ofstream logFile(GetLogFilePath(), std::ios::app);
+            if (logFile.is_open()) {
+                logFile << formatted;
+                logFile.flush();
+            }
         }
 
     private:

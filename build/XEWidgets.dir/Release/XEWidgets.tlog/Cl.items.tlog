@@ -1,9 +1,17 @@
 C:\Xeno_Desk\xe-widgets\src\main.cpp;C:\Xeno_Desk\xe-widgets\build\XEWidgets.dir\Release\main.obj
 C:\Xeno_Desk\xe-widgets\src\core\Engine.cpp;C:\Xeno_Desk\xe-widgets\build\XEWidgets.dir\Release\Engine.obj
+C:\Xeno_Desk\xe-widgets\src\core\WidgetConfig.cpp;C:\Xeno_Desk\xe-widgets\build\XEWidgets.dir\Release\WidgetConfig.obj
 C:\Xeno_Desk\xe-widgets\src\graphics\D2DRenderer.cpp;C:\Xeno_Desk\xe-widgets\build\XEWidgets.dir\Release\D2DRenderer.obj
 C:\Xeno_Desk\xe-widgets\src\windows\Window.cpp;C:\Xeno_Desk\xe-widgets\build\XEWidgets.dir\Release\Window.obj
 C:\Xeno_Desk\xe-widgets\src\windows\WidgetWindow.cpp;C:\Xeno_Desk\xe-widgets\build\XEWidgets.dir\Release\WidgetWindow.obj
 C:\Xeno_Desk\xe-widgets\src\windows\WindowManager.cpp;C:\Xeno_Desk\xe-widgets\build\XEWidgets.dir\Release\WindowManager.obj
 C:\Xeno_Desk\xe-widgets\src\data\SystemTimeProvider.cpp;C:\Xeno_Desk\xe-widgets\build\XEWidgets.dir\Release\SystemTimeProvider.obj
+C:\Xeno_Desk\xe-widgets\src\data\SMTCProvider.cpp;C:\Xeno_Desk\xe-widgets\build\XEWidgets.dir\Release\SMTCProvider.obj
+C:\Xeno_Desk\xe-widgets\src\data\TelemetryProvider.cpp;C:\Xeno_Desk\xe-widgets\build\XEWidgets.dir\Release\TelemetryProvider.obj
+C:\Xeno_Desk\xe-widgets\src\manager\TrayManager.cpp;C:\Xeno_Desk\xe-widgets\build\XEWidgets.dir\Release\TrayManager.obj
 C:\Xeno_Desk\xe-widgets\src\widgets\ClockWidget.cpp;C:\Xeno_Desk\xe-widgets\build\XEWidgets.dir\Release\ClockWidget.obj
 C:\Xeno_Desk\xe-widgets\src\widgets\MusicWidget.cpp;C:\Xeno_Desk\xe-widgets\build\XEWidgets.dir\Release\MusicWidget.obj
+C:\Xeno_Desk\xe-widgets\src\widgets\SystemMonitorWidget.cpp;C:\Xeno_Desk\xe-widgets\build\XEWidgets.dir\Release\SystemMonitorWidget.obj
+C:\Xeno_Desk\xe-widgets\src\widgets\WeatherWidget.cpp;C:\Xeno_Desk\xe-widgets\build\XEWidgets.dir\Release\WeatherWidget.obj
+C:\Xeno_Desk\xe-widgets\src\widgets\NotesWidget.cpp;C:\Xeno_Desk\xe-widgets\build\XEWidgets.dir\Release\NotesWidget.obj
+C:\Xeno_Desk\xe-widgets\src\widgets\CalendarWidget.cpp;C:\Xeno_Desk\xe-widgets\build\XEWidgets.dir\Release\CalendarWidget.obj

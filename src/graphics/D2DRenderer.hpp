@@ -31,6 +31,9 @@ namespace xe {
         void FillRectangle(const D2D1_RECT_F& rect, const D2D1_COLOR_F& color);
         void DrawRoundedRectangle(const D2D1_ROUNDED_RECT& roundedRect, const D2D1_COLOR_F& color, float strokeWidth = 1.0f);
         void FillRoundedRectangle(const D2D1_ROUNDED_RECT& roundedRect, const D2D1_COLOR_F& color);
+        void DrawEllipse(const D2D1_ELLIPSE& ellipse, const D2D1_COLOR_F& color, float strokeWidth = 1.0f);
+        void FillEllipse(const D2D1_ELLIPSE& ellipse, const D2D1_COLOR_F& color);
+        void DrawGeometry(ID2D1Geometry* geometry, const D2D1_COLOR_F& color, float strokeWidth = 1.0f);
 
         void DrawText(
             const std::wstring& text,

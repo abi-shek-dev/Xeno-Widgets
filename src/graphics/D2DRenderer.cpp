@@ -278,6 +278,30 @@ namespace xe {
         }
     }
 
+    void D2DRenderer::DrawEllipse(const D2D1_ELLIPSE& ellipse, const D2D1_COLOR_F& color, float strokeWidth) {
+        auto target = GetRenderTarget();
+        auto brush = GetOrCreateBrush(color);
+        if (target && brush) {
+            target->DrawEllipse(ellipse, brush.Get(), strokeWidth);
+        }
+    }
+
+    void D2DRenderer::FillEllipse(const D2D1_ELLIPSE& ellipse, const D2D1_COLOR_F& color) {
+        auto target = GetRenderTarget();
+        auto brush = GetOrCreateBrush(color);
+        if (target && brush) {
+            target->FillEllipse(ellipse, brush.Get());
+        }
+    }
+
+    void D2DRenderer::DrawGeometry(ID2D1Geometry* geometry, const D2D1_COLOR_F& color, float strokeWidth) {
+        auto target = GetRenderTarget();
+        auto brush = GetOrCreateBrush(color);
+        if (target && brush && geometry) {
+            target->DrawGeometry(geometry, brush.Get(), strokeWidth);
+        }
+    }
+
     void D2DRenderer::DrawText(
         const std::wstring& text,
         const D2D1_RECT_F& layoutRect,

@@ -87,7 +87,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>C:\Xeno_Desk\xe-widgets\include;C:\Xeno_Desk\xe-widgets\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalOptions>%(AdditionalOptions) /utf-8</AdditionalOptions>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Program Files (x86)/Windows Kits/10/Include/10.0.26100.0/cppwinrt" /utf-8</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <BufferSecurityCheck></BufferSecurityCheck>
@@ -95,6 +95,7 @@
       <ConformanceMode>true</ConformanceMode>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
       <FloatingPointModel></FloatingPointModel>
       <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
@@ -108,16 +109,16 @@
       <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
       <UseFullPaths>false</UseFullPaths>
       <WarningLevel>Level4</WarningLevel>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;UNICODE;_UNICODE;WIN32_LEAN_AND_MEAN;NOMINMAX;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;UNICODE;_UNICODE;WIN32_LEAN_AND_MEAN;NOMINMAX;XE_SMTC_ENABLED;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;UNICODE;_UNICODE;WIN32_LEAN_AND_MEAN;NOMINMAX;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Xeno_Desk\xe-widgets\include;C:\Xeno_Desk\xe-widgets\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;UNICODE;_UNICODE;WIN32_LEAN_AND_MEAN;NOMINMAX;XE_SMTC_ENABLED;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Xeno_Desk\xe-widgets\include;C:\Xeno_Desk\xe-widgets\src;C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\cppwinrt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Xeno_Desk\xe-widgets\include;C:\Xeno_Desk\xe-widgets\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Xeno_Desk\xe-widgets\include;C:\Xeno_Desk\xe-widgets\src;C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\cppwinrt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -125,7 +126,7 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <Link>
-      <AdditionalDependencies>d2d1.lib;dwrite.lib;windowscodecs.lib;dwmapi.lib;shcore.lib;user32.lib;gdi32.lib;ole32.lib;shell32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>d2d1.lib;dwrite.lib;windowscodecs.lib;dwmapi.lib;shcore.lib;user32.lib;gdi32.lib;ole32.lib;shell32.lib;iphlpapi.lib;windowsapp.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <DataExecutionPrevention></DataExecutionPrevention>
@@ -146,13 +147,14 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>C:\Xeno_Desk\xe-widgets\include;C:\Xeno_Desk\xe-widgets\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalOptions>%(AdditionalOptions) /utf-8</AdditionalOptions>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Program Files (x86)/Windows Kits/10/Include/10.0.26100.0/cppwinrt" /utf-8</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <BufferSecurityCheck></BufferSecurityCheck>
       <CallingConvention></CallingConvention>
       <ConformanceMode>true</ConformanceMode>
       <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
       <FloatingPointModel></FloatingPointModel>
       <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -166,18 +168,18 @@
       <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
       <UseFullPaths>false</UseFullPaths>
       <WarningLevel>Level4</WarningLevel>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UNICODE;_UNICODE;WIN32_LEAN_AND_MEAN;NOMINMAX;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UNICODE;_UNICODE;WIN32_LEAN_AND_MEAN;NOMINMAX;XE_SMTC_ENABLED;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <DebugInformationFormat>
       </DebugInformationFormat>
       <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UNICODE;_UNICODE;WIN32_LEAN_AND_MEAN;NOMINMAX;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Xeno_Desk\xe-widgets\include;C:\Xeno_Desk\xe-widgets\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UNICODE;_UNICODE;WIN32_LEAN_AND_MEAN;NOMINMAX;XE_SMTC_ENABLED;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Xeno_Desk\xe-widgets\include;C:\Xeno_Desk\xe-widgets\src;C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\cppwinrt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Xeno_Desk\xe-widgets\include;C:\Xeno_Desk\xe-widgets\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Xeno_Desk\xe-widgets\include;C:\Xeno_Desk\xe-widgets\src;C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\cppwinrt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -185,7 +187,7 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <Link>
-      <AdditionalDependencies>d2d1.lib;dwrite.lib;windowscodecs.lib;dwmapi.lib;shcore.lib;user32.lib;gdi32.lib;ole32.lib;shell32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>d2d1.lib;dwrite.lib;windowscodecs.lib;dwmapi.lib;shcore.lib;user32.lib;gdi32.lib;ole32.lib;shell32.lib;iphlpapi.lib;windowsapp.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <DataExecutionPrevention></DataExecutionPrevention>
@@ -206,13 +208,14 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>C:\Xeno_Desk\xe-widgets\include;C:\Xeno_Desk\xe-widgets\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalOptions>%(AdditionalOptions) /utf-8</AdditionalOptions>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Program Files (x86)/Windows Kits/10/Include/10.0.26100.0/cppwinrt" /utf-8</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <BufferSecurityCheck></BufferSecurityCheck>
       <CallingConvention></CallingConvention>
       <ConformanceMode>true</ConformanceMode>
       <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
       <FloatingPointModel></FloatingPointModel>
       <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
@@ -226,18 +229,18 @@
       <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
       <UseFullPaths>false</UseFullPaths>
       <WarningLevel>Level4</WarningLevel>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UNICODE;_UNICODE;WIN32_LEAN_AND_MEAN;NOMINMAX;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UNICODE;_UNICODE;WIN32_LEAN_AND_MEAN;NOMINMAX;XE_SMTC_ENABLED;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <DebugInformationFormat>
       </DebugInformationFormat>
       <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UNICODE;_UNICODE;WIN32_LEAN_AND_MEAN;NOMINMAX;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Xeno_Desk\xe-widgets\include;C:\Xeno_Desk\xe-widgets\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UNICODE;_UNICODE;WIN32_LEAN_AND_MEAN;NOMINMAX;XE_SMTC_ENABLED;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Xeno_Desk\xe-widgets\include;C:\Xeno_Desk\xe-widgets\src;C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\cppwinrt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Xeno_Desk\xe-widgets\include;C:\Xeno_Desk\xe-widgets\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Xeno_Desk\xe-widgets\include;C:\Xeno_Desk\xe-widgets\src;C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\cppwinrt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -245,7 +248,7 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <Link>
-      <AdditionalDependencies>d2d1.lib;dwrite.lib;windowscodecs.lib;dwmapi.lib;shcore.lib;user32.lib;gdi32.lib;ole32.lib;shell32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>d2d1.lib;dwrite.lib;windowscodecs.lib;dwmapi.lib;shcore.lib;user32.lib;gdi32.lib;ole32.lib;shell32.lib;iphlpapi.lib;windowsapp.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <DataExecutionPrevention></DataExecutionPrevention>
@@ -266,7 +269,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>C:\Xeno_Desk\xe-widgets\include;C:\Xeno_Desk\xe-widgets\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalOptions>%(AdditionalOptions) /utf-8</AdditionalOptions>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Program Files (x86)/Windows Kits/10/Include/10.0.26100.0/cppwinrt" /utf-8</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <BufferSecurityCheck></BufferSecurityCheck>
@@ -274,6 +277,7 @@
       <ConformanceMode>true</ConformanceMode>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
       <FloatingPointModel></FloatingPointModel>
       <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
@@ -287,16 +291,16 @@
       <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
       <UseFullPaths>false</UseFullPaths>
       <WarningLevel>Level4</WarningLevel>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UNICODE;_UNICODE;WIN32_LEAN_AND_MEAN;NOMINMAX;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UNICODE;_UNICODE;WIN32_LEAN_AND_MEAN;NOMINMAX;XE_SMTC_ENABLED;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UNICODE;_UNICODE;WIN32_LEAN_AND_MEAN;NOMINMAX;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Xeno_Desk\xe-widgets\include;C:\Xeno_Desk\xe-widgets\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UNICODE;_UNICODE;WIN32_LEAN_AND_MEAN;NOMINMAX;XE_SMTC_ENABLED;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Xeno_Desk\xe-widgets\include;C:\Xeno_Desk\xe-widgets\src;C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\cppwinrt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Xeno_Desk\xe-widgets\include;C:\Xeno_Desk\xe-widgets\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Xeno_Desk\xe-widgets\include;C:\Xeno_Desk\xe-widgets\src;C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\cppwinrt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -304,7 +308,7 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <Link>
-      <AdditionalDependencies>d2d1.lib;dwrite.lib;windowscodecs.lib;dwmapi.lib;shcore.lib;user32.lib;gdi32.lib;ole32.lib;shell32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>d2d1.lib;dwrite.lib;windowscodecs.lib;dwmapi.lib;shcore.lib;user32.lib;gdi32.lib;ole32.lib;shell32.lib;iphlpapi.lib;windowsapp.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <DataExecutionPrevention></DataExecutionPrevention>
@@ -382,23 +386,39 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   <ItemGroup>
     <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\main.cpp" />
     <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\core\Engine.cpp" />
+    <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\core\WidgetConfig.cpp" />
     <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\graphics\D2DRenderer.cpp" />
     <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\windows\Window.cpp" />
     <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\windows\WidgetWindow.cpp" />
     <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\windows\WindowManager.cpp" />
     <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\data\SystemTimeProvider.cpp" />
+    <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\data\SMTCProvider.cpp" />
+    <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\data\TelemetryProvider.cpp" />
+    <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\manager\TrayManager.cpp" />
     <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\widgets\ClockWidget.cpp" />
     <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\widgets\MusicWidget.cpp" />
+    <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\widgets\SystemMonitorWidget.cpp" />
+    <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\widgets\WeatherWidget.cpp" />
+    <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\widgets\NotesWidget.cpp" />
+    <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\widgets\CalendarWidget.cpp" />
     <ClInclude Include="C:\Xeno_Desk\xe-widgets\include\Common.hpp" />
     <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\core\Logger.hpp" />
     <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\core\Engine.hpp" />
+    <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\core\WidgetConfig.hpp" />
     <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\graphics\D2DRenderer.hpp" />
     <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\windows\Window.hpp" />
     <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\windows\WidgetWindow.hpp" />
     <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\windows\WindowManager.hpp" />
     <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\data\SystemTimeProvider.hpp" />
+    <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\data\SMTCProvider.hpp" />
+    <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\data\TelemetryProvider.hpp" />
+    <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\manager\TrayManager.hpp" />
     <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\widgets\ClockWidget.hpp" />
     <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\widgets\MusicWidget.hpp" />
+    <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\widgets\SystemMonitorWidget.hpp" />
+    <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\widgets\WeatherWidget.hpp" />
+    <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\widgets\NotesWidget.hpp" />
+    <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\widgets\CalendarWidget.hpp" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

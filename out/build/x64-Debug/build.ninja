@@ -51,9 +51,9 @@ build cmake_object_order_depends_target_XEWidgets: phony || .
 
 build CMakeFiles\XEWidgets.dir\src\main.cpp.obj: CXX_COMPILER__XEWidgets_unscanned_Debug C$:\Xeno_Desk\xe-widgets\src\main.cpp || cmake_object_order_depends_target_XEWidgets
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DUNICODE -DWIN32_LEAN_AND_MEAN -D_UNICODE
+  DEFINES = -DNOMINMAX -DUNICODE -DWIN32_LEAN_AND_MEAN -DXE_SMTC_ENABLED -D_UNICODE
   FLAGS = /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /std:c++20 /W4 /permissive- /utf-8 /EHsc
-  INCLUDES = -IC:\Xeno_Desk\xe-widgets\include -IC:\Xeno_Desk\xe-widgets\src
+  INCLUDES = -IC:\Xeno_Desk\xe-widgets\include -IC:\Xeno_Desk\xe-widgets\src -external:I"C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\cppwinrt" -external:W0
   OBJECT_DIR = CMakeFiles\XEWidgets.dir
   OBJECT_FILE_DIR = CMakeFiles\XEWidgets.dir\src
   TARGET_COMPILE_PDB = CMakeFiles\XEWidgets.dir\
@@ -62,9 +62,20 @@ build CMakeFiles\XEWidgets.dir\src\main.cpp.obj: CXX_COMPILER__XEWidgets_unscann
 
 build CMakeFiles\XEWidgets.dir\src\core\Engine.cpp.obj: CXX_COMPILER__XEWidgets_unscanned_Debug C$:\Xeno_Desk\xe-widgets\src\core\Engine.cpp || cmake_object_order_depends_target_XEWidgets
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DUNICODE -DWIN32_LEAN_AND_MEAN -D_UNICODE
+  DEFINES = -DNOMINMAX -DUNICODE -DWIN32_LEAN_AND_MEAN -DXE_SMTC_ENABLED -D_UNICODE
   FLAGS = /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /std:c++20 /W4 /permissive- /utf-8 /EHsc
-  INCLUDES = -IC:\Xeno_Desk\xe-widgets\include -IC:\Xeno_Desk\xe-widgets\src
+  INCLUDES = -IC:\Xeno_Desk\xe-widgets\include -IC:\Xeno_Desk\xe-widgets\src -external:I"C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\cppwinrt" -external:W0
+  OBJECT_DIR = CMakeFiles\XEWidgets.dir
+  OBJECT_FILE_DIR = CMakeFiles\XEWidgets.dir\src\core
+  TARGET_COMPILE_PDB = CMakeFiles\XEWidgets.dir\
+  TARGET_PDB = bin\XEWidgets.pdb
+  TARGET_SUPPORT_DIR = CMakeFiles\XEWidgets.dir
+
+build CMakeFiles\XEWidgets.dir\src\core\WidgetConfig.cpp.obj: CXX_COMPILER__XEWidgets_unscanned_Debug C$:\Xeno_Desk\xe-widgets\src\core\WidgetConfig.cpp || cmake_object_order_depends_target_XEWidgets
+  CONFIG = Debug
+  DEFINES = -DNOMINMAX -DUNICODE -DWIN32_LEAN_AND_MEAN -DXE_SMTC_ENABLED -D_UNICODE
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /std:c++20 /W4 /permissive- /utf-8 /EHsc
+  INCLUDES = -IC:\Xeno_Desk\xe-widgets\include -IC:\Xeno_Desk\xe-widgets\src -external:I"C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\cppwinrt" -external:W0
   OBJECT_DIR = CMakeFiles\XEWidgets.dir
   OBJECT_FILE_DIR = CMakeFiles\XEWidgets.dir\src\core
   TARGET_COMPILE_PDB = CMakeFiles\XEWidgets.dir\
@@ -73,9 +84,9 @@ build CMakeFiles\XEWidgets.dir\src\core\Engine.cpp.obj: CXX_COMPILER__XEWidgets_
 
 build CMakeFiles\XEWidgets.dir\src\graphics\D2DRenderer.cpp.obj: CXX_COMPILER__XEWidgets_unscanned_Debug C$:\Xeno_Desk\xe-widgets\src\graphics\D2DRenderer.cpp || cmake_object_order_depends_target_XEWidgets
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DUNICODE -DWIN32_LEAN_AND_MEAN -D_UNICODE
+  DEFINES = -DNOMINMAX -DUNICODE -DWIN32_LEAN_AND_MEAN -DXE_SMTC_ENABLED -D_UNICODE
   FLAGS = /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /std:c++20 /W4 /permissive- /utf-8 /EHsc
-  INCLUDES = -IC:\Xeno_Desk\xe-widgets\include -IC:\Xeno_Desk\xe-widgets\src
+  INCLUDES = -IC:\Xeno_Desk\xe-widgets\include -IC:\Xeno_Desk\xe-widgets\src -external:I"C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\cppwinrt" -external:W0
   OBJECT_DIR = CMakeFiles\XEWidgets.dir
   OBJECT_FILE_DIR = CMakeFiles\XEWidgets.dir\src\graphics
   TARGET_COMPILE_PDB = CMakeFiles\XEWidgets.dir\
@@ -84,9 +95,9 @@ build CMakeFiles\XEWidgets.dir\src\graphics\D2DRenderer.cpp.obj: CXX_COMPILER__X
 
 build CMakeFiles\XEWidgets.dir\src\windows\Window.cpp.obj: CXX_COMPILER__XEWidgets_unscanned_Debug C$:\Xeno_Desk\xe-widgets\src\windows\Window.cpp || cmake_object_order_depends_target_XEWidgets
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DUNICODE -DWIN32_LEAN_AND_MEAN -D_UNICODE
+  DEFINES = -DNOMINMAX -DUNICODE -DWIN32_LEAN_AND_MEAN -DXE_SMTC_ENABLED -D_UNICODE
   FLAGS = /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /std:c++20 /W4 /permissive- /utf-8 /EHsc
-  INCLUDES = -IC:\Xeno_Desk\xe-widgets\include -IC:\Xeno_Desk\xe-widgets\src
+  INCLUDES = -IC:\Xeno_Desk\xe-widgets\include -IC:\Xeno_Desk\xe-widgets\src -external:I"C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\cppwinrt" -external:W0
   OBJECT_DIR = CMakeFiles\XEWidgets.dir
   OBJECT_FILE_DIR = CMakeFiles\XEWidgets.dir\src\windows
   TARGET_COMPILE_PDB = CMakeFiles\XEWidgets.dir\
@@ -95,9 +106,9 @@ build CMakeFiles\XEWidgets.dir\src\windows\Window.cpp.obj: CXX_COMPILER__XEWidge
 
 build CMakeFiles\XEWidgets.dir\src\windows\WidgetWindow.cpp.obj: CXX_COMPILER__XEWidgets_unscanned_Debug C$:\Xeno_Desk\xe-widgets\src\windows\WidgetWindow.cpp || cmake_object_order_depends_target_XEWidgets
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DUNICODE -DWIN32_LEAN_AND_MEAN -D_UNICODE
+  DEFINES = -DNOMINMAX -DUNICODE -DWIN32_LEAN_AND_MEAN -DXE_SMTC_ENABLED -D_UNICODE
   FLAGS = /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /std:c++20 /W4 /permissive- /utf-8 /EHsc
-  INCLUDES = -IC:\Xeno_Desk\xe-widgets\include -IC:\Xeno_Desk\xe-widgets\src
+  INCLUDES = -IC:\Xeno_Desk\xe-widgets\include -IC:\Xeno_Desk\xe-widgets\src -external:I"C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\cppwinrt" -external:W0
   OBJECT_DIR = CMakeFiles\XEWidgets.dir
   OBJECT_FILE_DIR = CMakeFiles\XEWidgets.dir\src\windows
   TARGET_COMPILE_PDB = CMakeFiles\XEWidgets.dir\
@@ -106,9 +117,9 @@ build CMakeFiles\XEWidgets.dir\src\windows\WidgetWindow.cpp.obj: CXX_COMPILER__X
 
 build CMakeFiles\XEWidgets.dir\src\windows\WindowManager.cpp.obj: CXX_COMPILER__XEWidgets_unscanned_Debug C$:\Xeno_Desk\xe-widgets\src\windows\WindowManager.cpp || cmake_object_order_depends_target_XEWidgets
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DUNICODE -DWIN32_LEAN_AND_MEAN -D_UNICODE
+  DEFINES = -DNOMINMAX -DUNICODE -DWIN32_LEAN_AND_MEAN -DXE_SMTC_ENABLED -D_UNICODE
   FLAGS = /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /std:c++20 /W4 /permissive- /utf-8 /EHsc
-  INCLUDES = -IC:\Xeno_Desk\xe-widgets\include -IC:\Xeno_Desk\xe-widgets\src
+  INCLUDES = -IC:\Xeno_Desk\xe-widgets\include -IC:\Xeno_Desk\xe-widgets\src -external:I"C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\cppwinrt" -external:W0
   OBJECT_DIR = CMakeFiles\XEWidgets.dir
   OBJECT_FILE_DIR = CMakeFiles\XEWidgets.dir\src\windows
   TARGET_COMPILE_PDB = CMakeFiles\XEWidgets.dir\
@@ -117,20 +128,53 @@ build CMakeFiles\XEWidgets.dir\src\windows\WindowManager.cpp.obj: CXX_COMPILER__
 
 build CMakeFiles\XEWidgets.dir\src\data\SystemTimeProvider.cpp.obj: CXX_COMPILER__XEWidgets_unscanned_Debug C$:\Xeno_Desk\xe-widgets\src\data\SystemTimeProvider.cpp || cmake_object_order_depends_target_XEWidgets
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DUNICODE -DWIN32_LEAN_AND_MEAN -D_UNICODE
+  DEFINES = -DNOMINMAX -DUNICODE -DWIN32_LEAN_AND_MEAN -DXE_SMTC_ENABLED -D_UNICODE
   FLAGS = /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /std:c++20 /W4 /permissive- /utf-8 /EHsc
-  INCLUDES = -IC:\Xeno_Desk\xe-widgets\include -IC:\Xeno_Desk\xe-widgets\src
+  INCLUDES = -IC:\Xeno_Desk\xe-widgets\include -IC:\Xeno_Desk\xe-widgets\src -external:I"C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\cppwinrt" -external:W0
   OBJECT_DIR = CMakeFiles\XEWidgets.dir
   OBJECT_FILE_DIR = CMakeFiles\XEWidgets.dir\src\data
   TARGET_COMPILE_PDB = CMakeFiles\XEWidgets.dir\
   TARGET_PDB = bin\XEWidgets.pdb
   TARGET_SUPPORT_DIR = CMakeFiles\XEWidgets.dir
 
+build CMakeFiles\XEWidgets.dir\src\data\SMTCProvider.cpp.obj: CXX_COMPILER__XEWidgets_unscanned_Debug C$:\Xeno_Desk\xe-widgets\src\data\SMTCProvider.cpp || cmake_object_order_depends_target_XEWidgets
+  CONFIG = Debug
+  DEFINES = -DNOMINMAX -DUNICODE -DWIN32_LEAN_AND_MEAN -DXE_SMTC_ENABLED -D_UNICODE
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /std:c++20 /W4 /permissive- /utf-8 /EHsc
+  INCLUDES = -IC:\Xeno_Desk\xe-widgets\include -IC:\Xeno_Desk\xe-widgets\src -external:I"C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\cppwinrt" -external:W0
+  OBJECT_DIR = CMakeFiles\XEWidgets.dir
+  OBJECT_FILE_DIR = CMakeFiles\XEWidgets.dir\src\data
+  TARGET_COMPILE_PDB = CMakeFiles\XEWidgets.dir\
+  TARGET_PDB = bin\XEWidgets.pdb
+  TARGET_SUPPORT_DIR = CMakeFiles\XEWidgets.dir
+
+build CMakeFiles\XEWidgets.dir\src\data\TelemetryProvider.cpp.obj: CXX_COMPILER__XEWidgets_unscanned_Debug C$:\Xeno_Desk\xe-widgets\src\data\TelemetryProvider.cpp || cmake_object_order_depends_target_XEWidgets
+  CONFIG = Debug
+  DEFINES = -DNOMINMAX -DUNICODE -DWIN32_LEAN_AND_MEAN -DXE_SMTC_ENABLED -D_UNICODE
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /std:c++20 /W4 /permissive- /utf-8 /EHsc
+  INCLUDES = -IC:\Xeno_Desk\xe-widgets\include -IC:\Xeno_Desk\xe-widgets\src -external:I"C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\cppwinrt" -external:W0
+  OBJECT_DIR = CMakeFiles\XEWidgets.dir
+  OBJECT_FILE_DIR = CMakeFiles\XEWidgets.dir\src\data
+  TARGET_COMPILE_PDB = CMakeFiles\XEWidgets.dir\
+  TARGET_PDB = bin\XEWidgets.pdb
+  TARGET_SUPPORT_DIR = CMakeFiles\XEWidgets.dir
+
+build CMakeFiles\XEWidgets.dir\src\manager\TrayManager.cpp.obj: CXX_COMPILER__XEWidgets_unscanned_Debug C$:\Xeno_Desk\xe-widgets\src\manager\TrayManager.cpp || cmake_object_order_depends_target_XEWidgets
+  CONFIG = Debug
+  DEFINES = -DNOMINMAX -DUNICODE -DWIN32_LEAN_AND_MEAN -DXE_SMTC_ENABLED -D_UNICODE
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /std:c++20 /W4 /permissive- /utf-8 /EHsc
+  INCLUDES = -IC:\Xeno_Desk\xe-widgets\include -IC:\Xeno_Desk\xe-widgets\src -external:I"C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\cppwinrt" -external:W0
+  OBJECT_DIR = CMakeFiles\XEWidgets.dir
+  OBJECT_FILE_DIR = CMakeFiles\XEWidgets.dir\src\manager
+  TARGET_COMPILE_PDB = CMakeFiles\XEWidgets.dir\
+  TARGET_PDB = bin\XEWidgets.pdb
+  TARGET_SUPPORT_DIR = CMakeFiles\XEWidgets.dir
+
 build CMakeFiles\XEWidgets.dir\src\widgets\ClockWidget.cpp.obj: CXX_COMPILER__XEWidgets_unscanned_Debug C$:\Xeno_Desk\xe-widgets\src\widgets\ClockWidget.cpp || cmake_object_order_depends_target_XEWidgets
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DUNICODE -DWIN32_LEAN_AND_MEAN -D_UNICODE
+  DEFINES = -DNOMINMAX -DUNICODE -DWIN32_LEAN_AND_MEAN -DXE_SMTC_ENABLED -D_UNICODE
   FLAGS = /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /std:c++20 /W4 /permissive- /utf-8 /EHsc
-  INCLUDES = -IC:\Xeno_Desk\xe-widgets\include -IC:\Xeno_Desk\xe-widgets\src
+  INCLUDES = -IC:\Xeno_Desk\xe-widgets\include -IC:\Xeno_Desk\xe-widgets\src -external:I"C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\cppwinrt" -external:W0
   OBJECT_DIR = CMakeFiles\XEWidgets.dir
   OBJECT_FILE_DIR = CMakeFiles\XEWidgets.dir\src\widgets
   TARGET_COMPILE_PDB = CMakeFiles\XEWidgets.dir\
@@ -139,9 +183,53 @@ build CMakeFiles\XEWidgets.dir\src\widgets\ClockWidget.cpp.obj: CXX_COMPILER__XE
 
 build CMakeFiles\XEWidgets.dir\src\widgets\MusicWidget.cpp.obj: CXX_COMPILER__XEWidgets_unscanned_Debug C$:\Xeno_Desk\xe-widgets\src\widgets\MusicWidget.cpp || cmake_object_order_depends_target_XEWidgets
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DUNICODE -DWIN32_LEAN_AND_MEAN -D_UNICODE
+  DEFINES = -DNOMINMAX -DUNICODE -DWIN32_LEAN_AND_MEAN -DXE_SMTC_ENABLED -D_UNICODE
   FLAGS = /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /std:c++20 /W4 /permissive- /utf-8 /EHsc
-  INCLUDES = -IC:\Xeno_Desk\xe-widgets\include -IC:\Xeno_Desk\xe-widgets\src
+  INCLUDES = -IC:\Xeno_Desk\xe-widgets\include -IC:\Xeno_Desk\xe-widgets\src -external:I"C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\cppwinrt" -external:W0
+  OBJECT_DIR = CMakeFiles\XEWidgets.dir
+  OBJECT_FILE_DIR = CMakeFiles\XEWidgets.dir\src\widgets
+  TARGET_COMPILE_PDB = CMakeFiles\XEWidgets.dir\
+  TARGET_PDB = bin\XEWidgets.pdb
+  TARGET_SUPPORT_DIR = CMakeFiles\XEWidgets.dir
+
+build CMakeFiles\XEWidgets.dir\src\widgets\SystemMonitorWidget.cpp.obj: CXX_COMPILER__XEWidgets_unscanned_Debug C$:\Xeno_Desk\xe-widgets\src\widgets\SystemMonitorWidget.cpp || cmake_object_order_depends_target_XEWidgets
+  CONFIG = Debug
+  DEFINES = -DNOMINMAX -DUNICODE -DWIN32_LEAN_AND_MEAN -DXE_SMTC_ENABLED -D_UNICODE
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /std:c++20 /W4 /permissive- /utf-8 /EHsc
+  INCLUDES = -IC:\Xeno_Desk\xe-widgets\include -IC:\Xeno_Desk\xe-widgets\src -external:I"C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\cppwinrt" -external:W0
+  OBJECT_DIR = CMakeFiles\XEWidgets.dir
+  OBJECT_FILE_DIR = CMakeFiles\XEWidgets.dir\src\widgets
+  TARGET_COMPILE_PDB = CMakeFiles\XEWidgets.dir\
+  TARGET_PDB = bin\XEWidgets.pdb
+  TARGET_SUPPORT_DIR = CMakeFiles\XEWidgets.dir
+
+build CMakeFiles\XEWidgets.dir\src\widgets\WeatherWidget.cpp.obj: CXX_COMPILER__XEWidgets_unscanned_Debug C$:\Xeno_Desk\xe-widgets\src\widgets\WeatherWidget.cpp || cmake_object_order_depends_target_XEWidgets
+  CONFIG = Debug
+  DEFINES = -DNOMINMAX -DUNICODE -DWIN32_LEAN_AND_MEAN -DXE_SMTC_ENABLED -D_UNICODE
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /std:c++20 /W4 /permissive- /utf-8 /EHsc
+  INCLUDES = -IC:\Xeno_Desk\xe-widgets\include -IC:\Xeno_Desk\xe-widgets\src -external:I"C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\cppwinrt" -external:W0
+  OBJECT_DIR = CMakeFiles\XEWidgets.dir
+  OBJECT_FILE_DIR = CMakeFiles\XEWidgets.dir\src\widgets
+  TARGET_COMPILE_PDB = CMakeFiles\XEWidgets.dir\
+  TARGET_PDB = bin\XEWidgets.pdb
+  TARGET_SUPPORT_DIR = CMakeFiles\XEWidgets.dir
+
+build CMakeFiles\XEWidgets.dir\src\widgets\NotesWidget.cpp.obj: CXX_COMPILER__XEWidgets_unscanned_Debug C$:\Xeno_Desk\xe-widgets\src\widgets\NotesWidget.cpp || cmake_object_order_depends_target_XEWidgets
+  CONFIG = Debug
+  DEFINES = -DNOMINMAX -DUNICODE -DWIN32_LEAN_AND_MEAN -DXE_SMTC_ENABLED -D_UNICODE
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /std:c++20 /W4 /permissive- /utf-8 /EHsc
+  INCLUDES = -IC:\Xeno_Desk\xe-widgets\include -IC:\Xeno_Desk\xe-widgets\src -external:I"C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\cppwinrt" -external:W0
+  OBJECT_DIR = CMakeFiles\XEWidgets.dir
+  OBJECT_FILE_DIR = CMakeFiles\XEWidgets.dir\src\widgets
+  TARGET_COMPILE_PDB = CMakeFiles\XEWidgets.dir\
+  TARGET_PDB = bin\XEWidgets.pdb
+  TARGET_SUPPORT_DIR = CMakeFiles\XEWidgets.dir
+
+build CMakeFiles\XEWidgets.dir\src\widgets\CalendarWidget.cpp.obj: CXX_COMPILER__XEWidgets_unscanned_Debug C$:\Xeno_Desk\xe-widgets\src\widgets\CalendarWidget.cpp || cmake_object_order_depends_target_XEWidgets
+  CONFIG = Debug
+  DEFINES = -DNOMINMAX -DUNICODE -DWIN32_LEAN_AND_MEAN -DXE_SMTC_ENABLED -D_UNICODE
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /std:c++20 /W4 /permissive- /utf-8 /EHsc
+  INCLUDES = -IC:\Xeno_Desk\xe-widgets\include -IC:\Xeno_Desk\xe-widgets\src -external:I"C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\cppwinrt" -external:W0
   OBJECT_DIR = CMakeFiles\XEWidgets.dir
   OBJECT_FILE_DIR = CMakeFiles\XEWidgets.dir\src\widgets
   TARGET_COMPILE_PDB = CMakeFiles\XEWidgets.dir\
@@ -156,11 +244,11 @@ build CMakeFiles\XEWidgets.dir\src\widgets\MusicWidget.cpp.obj: CXX_COMPILER__XE
 #############################################
 # Link the executable bin\XEWidgets.exe
 
-build bin\XEWidgets.exe: CXX_EXECUTABLE_LINKER__XEWidgets_Debug CMakeFiles\XEWidgets.dir\src\main.cpp.obj CMakeFiles\XEWidgets.dir\src\core\Engine.cpp.obj CMakeFiles\XEWidgets.dir\src\graphics\D2DRenderer.cpp.obj CMakeFiles\XEWidgets.dir\src\windows\Window.cpp.obj CMakeFiles\XEWidgets.dir\src\windows\WidgetWindow.cpp.obj CMakeFiles\XEWidgets.dir\src\windows\WindowManager.cpp.obj CMakeFiles\XEWidgets.dir\src\data\SystemTimeProvider.cpp.obj CMakeFiles\XEWidgets.dir\src\widgets\ClockWidget.cpp.obj CMakeFiles\XEWidgets.dir\src\widgets\MusicWidget.cpp.obj
+build bin\XEWidgets.exe: CXX_EXECUTABLE_LINKER__XEWidgets_Debug CMakeFiles\XEWidgets.dir\src\main.cpp.obj CMakeFiles\XEWidgets.dir\src\core\Engine.cpp.obj CMakeFiles\XEWidgets.dir\src\core\WidgetConfig.cpp.obj CMakeFiles\XEWidgets.dir\src\graphics\D2DRenderer.cpp.obj CMakeFiles\XEWidgets.dir\src\windows\Window.cpp.obj CMakeFiles\XEWidgets.dir\src\windows\WidgetWindow.cpp.obj CMakeFiles\XEWidgets.dir\src\windows\WindowManager.cpp.obj CMakeFiles\XEWidgets.dir\src\data\SystemTimeProvider.cpp.obj CMakeFiles\XEWidgets.dir\src\data\SMTCProvider.cpp.obj CMakeFiles\XEWidgets.dir\src\data\TelemetryProvider.cpp.obj CMakeFiles\XEWidgets.dir\src\manager\TrayManager.cpp.obj CMakeFiles\XEWidgets.dir\src\widgets\ClockWidget.cpp.obj CMakeFiles\XEWidgets.dir\src\widgets\MusicWidget.cpp.obj CMakeFiles\XEWidgets.dir\src\widgets\SystemMonitorWidget.cpp.obj CMakeFiles\XEWidgets.dir\src\widgets\WeatherWidget.cpp.obj CMakeFiles\XEWidgets.dir\src\widgets\NotesWidget.cpp.obj CMakeFiles\XEWidgets.dir\src\widgets\CalendarWidget.cpp.obj
   CONFIG = Debug
   FLAGS = /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd
   LINK_FLAGS = /machine:x64 /debug /INCREMENTAL /subsystem:windows /SUBSYSTEM:WINDOWS /ENTRY:wWinMainCRTStartup
-  LINK_LIBRARIES = d2d1.lib  dwrite.lib  windowscodecs.lib  dwmapi.lib  shcore.lib  user32.lib  gdi32.lib  ole32.lib  shell32.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib
+  LINK_LIBRARIES = d2d1.lib  dwrite.lib  windowscodecs.lib  dwmapi.lib  shcore.lib  user32.lib  gdi32.lib  ole32.lib  shell32.lib  iphlpapi.lib  windowsapp.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib
   OBJECT_DIR = CMakeFiles\XEWidgets.dir
   POST_BUILD = cd .
   PRE_LINK = cd .

@@ -7,6 +7,9 @@
     <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\core\Engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\core\WidgetConfig.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\graphics\D2DRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -22,10 +25,31 @@
     <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\data\SystemTimeProvider.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\data\SMTCProvider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\data\TelemetryProvider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\manager\TrayManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\widgets\ClockWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\widgets\MusicWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\widgets\SystemMonitorWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\widgets\WeatherWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\widgets\NotesWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Xeno_Desk\xe-widgets\src\widgets\CalendarWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -37,6 +61,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\core\Engine.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\core\WidgetConfig.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\graphics\D2DRenderer.hpp">
@@ -54,10 +81,31 @@
     <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\data\SystemTimeProvider.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\data\SMTCProvider.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\data\TelemetryProvider.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\manager\TrayManager.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\widgets\ClockWidget.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\widgets\MusicWidget.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\widgets\SystemMonitorWidget.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\widgets\WeatherWidget.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\widgets\NotesWidget.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Xeno_Desk\xe-widgets\src\widgets\CalendarWidget.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

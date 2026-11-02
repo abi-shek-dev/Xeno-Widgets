@@ -120,15 +120,25 @@ namespace xe {
         }
     }
 
+    void WidgetWindow::Hide() {
+        if (m_hwnd) {
+            ShowWindow(m_hwnd, SW_HIDE);
+        }
+    }
+
     void WidgetWindow::Close() {
         if (m_hwnd) {
+            RECT r{};
+            GetWindowRect(m_hwnd, &r);
+            m_config.x = r.left;
+            m_config.y = r.top;
+            m_config.visible = false;
             HWND hwndToDestroy = m_hwnd;
             m_hwnd = nullptr;
             if (m_renderer) {
                 m_renderer->DiscardDeviceResources(hwndToDestroy);
             }
             DestroyWindow(hwndToDestroy);
-            WindowManager::Instance().RemoveWidget(hwndToDestroy);
         }
     }
 
@@ -206,14 +216,14 @@ namespace xe {
             3.0f,
             3.0f
         };
-        m_renderer->FillRoundedRectangle(pillRect, Colors::BgDark);
-        m_renderer->DrawRoundedRectangle(pillRect, Colors::BorderDark, 1.0f);
+        m_renderer->FillRoundedRectangle(pillRect, Colors::BgLight);
+        m_renderer->DrawRoundedRectangle(pillRect, Colors::BorderLight, 1.0f);
 
         // Divider line between Lock and Close
         m_renderer->DrawLine(
             D2D1::Point2F(pillX + 23.0f, pillY + 2.0f),
             D2D1::Point2F(pillX + 23.0f, pillY + pillH - 2.0f),
-            Colors::BorderDark,
+            Colors::BorderLight,
             1.0f
         );
 
@@ -222,7 +232,7 @@ namespace xe {
         m_renderer->DrawText(
             m_locked ? L"L" : L"U",
             lockTextRect,
-            m_locked ? Colors::FgDark : Colors::MutedDark,
+            m_locked ? Colors::FgLight : Colors::MutedLight,
             m_formatToolbar.Get()
         );
 
@@ -231,7 +241,7 @@ namespace xe {
         m_renderer->DrawText(
             L"\u00D7",
             closeTextRect,
-            Colors::MutedDark,
+            Colors::MutedLight,
             m_formatToolbar.Get()
         );
     }
@@ -302,9 +312,14 @@ namespace xe {
             case ID_MENU_CLICKTHROUGH:
                 SetClickThrough(!m_config.clickThrough);
                 break;
-            case ID_MENU_OPEN_MANAGER:
-                // Notification/Focus hook for XE Manager
+            case ID_MENU_OPEN_MANAGER: {
+                HWND hManager = FindWindowW(L"XEWidgets_Native_Class", nullptr);
+                if (hManager) {
+                    ShowWindow(hManager, SW_SHOW);
+                    SetForegroundWindow(hManager);
+                }
                 break;
+            }
             case ID_MENU_CLOSE:
                 Close();
                 break;
@@ -497,7 +512,22 @@ namespace xe {
             case WM_ERASEBKGND:
                 return 1;
 
+            case WM_WINDOWPOSCHANGED: {
+                auto* wp = reinterpret_cast<WINDOWPOS*>(lParam);
+                if (!(wp->flags & SWP_NOMOVE)) {
+                    m_config.x = wp->x;
+                    m_config.y = wp->y;
+                }
+                return 0;
+            }
+
             case WM_DESTROY: {
+                if (m_hwnd) {
+                    RECT r{};
+                    GetWindowRect(m_hwnd, &r);
+                    m_config.x = r.left;
+                    m_config.y = r.top;
+                }
                 if (m_renderer) {
                     m_renderer->DiscardDeviceResources(m_hwnd);
                 }

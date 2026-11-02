@@ -2,6 +2,7 @@
 
 #include "Common.hpp"
 #include "../windows/WidgetWindow.hpp"
+#include "../data/SMTCProvider.hpp"
 
 namespace xe {
 
@@ -31,6 +32,7 @@ namespace xe {
 
         TrackInfo m_track;
         UINT_PTR m_timerId = 2;
+        bool m_usingSMTC = false;
 
         RECT m_btnPrev{};
         RECT m_btnPlay{};
